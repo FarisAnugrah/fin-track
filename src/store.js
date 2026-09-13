@@ -10,7 +10,7 @@ export const useStore = create(
       
       transactions: [],
       addTransaction: (tx) => set((state) => ({ 
-        transactions: [...state.transactions, { ...tx, id: Date.now().toString() }] 
+        transactions: [...state.transactions, { ...tx, id: Date.now().toString(), date: new Date().toISOString() }] 
       })),
       removeTransaction: (id) => set((state) => ({
         transactions: state.transactions.filter(t => t.id !== id)

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2 } from 'lucide-react';
+import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2, Search, Filter } from 'lucide-react';
 import { useStore } from './store';
 import AddGoalModal from './AddGoalModal';
 import Onboarding from './Onboarding';
@@ -49,8 +49,16 @@ export default function App() {
 
   const [txForm, setTxForm] = useState({ amount: '', category: 'needs', desc: '' });
   const [incomeForm, setIncomeForm] = useState(income.toString());
+  
+  // Search & Filter State
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('all');
 
-  const handleAddTx = (e) => {
+  const filteredTransactions = transactions.filter(tx => {
+    const matchesSearch = tx.desc.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === 'all' || tx.category === filterCategory;
+    return matchesSearch && matchesCategory;
+  });
     e.preventDefault();
     if (!txForm.amount) return;
     addTransaction({ ...txForm, amount: Number(txForm.amount) });
@@ -260,21 +268,52 @@ export default function App() {
 
         {activeTab === 'cashflow' && (
           <section className="bg-white border border-gray-100 rounded-[2rem] shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8">
-            <h3 className="text-xl font-extrabold text-[#0F172A] mb-8">Recent Transactions</h3>
-            {transactions.length === 0 ? (
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+              <h3 className="text-xl font-extrabold text-[#0F172A]">Recent Transactions</h3>
+              
+              <div className="flex items-center gap-3 w-full md:w-auto">
+                <div className="relative flex-1 md:w-64">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <input 
+                    type="text" 
+                    placeholder="Search..." 
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 pl-10 pr-4 py-2 rounded-xl focus:border-[#10B981] focus:bg-white focus:ring-0 outline-none font-medium text-sm transition-colors"
+                  />
+                </div>
+                <div className="relative flex-shrink-0">
+                  <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <select 
+                    value={filterCategory}
+                    onChange={(e) => setFilterCategory(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 pl-10 pr-8 py-2 rounded-xl focus:border-[#10B981] focus:bg-white focus:ring-0 outline-none font-medium text-sm transition-colors appearance-none cursor-pointer"
+                  >
+                    <option value="all">All Categories</option>
+                    <option value="needs">Needs</option>
+                    <option value="wants">Wants</option>
+                    <option value="goals">Goals</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {filteredTransactions.length === 0 ? (
               <div className="text-center py-16 px-4">
                 <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-gray-300">
                   <Activity className="w-10 h-10" />
                 </div>
                 <h4 className="font-bold text-gray-900 text-xl mb-2">Clean slate</h4>
-                <p className="text-gray-500 font-medium text-base max-w-sm mx-auto">You haven't spent any money yet. Click the Add Transaction button to log your first expense.</p>
+                <p className="text-gray-500 font-medium text-base max-w-sm mx-auto">
+                  {transactions.length === 0 ? "You haven't spent any money yet. Click the Add Transaction button to log your first expense." : "No transactions match your search."}
+                </p>
               </div>
             ) : (
               <div className="space-y-4">
-                {transactions.slice().reverse().map(tx => (
+                {filteredTransactions.slice().reverse().map(tx => (
                   <div key={tx.id} className="flex items-center justify-between p-5 rounded-[1.5rem] border-2 border-gray-100 hover:border-gray-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] bg-white transition-all hover:-translate-y-0.5">
                     <div className="flex items-center gap-4">
-                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0 ${
                         tx.category === 'needs' ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]' : 
                         tx.category === 'wants' ? 'bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]' : 
                         'bg-[#FDF4FF] text-[#C026D3] border border-[#F5D0FE]'
@@ -283,7 +322,17 @@ export default function App() {
                       </div>
                       <div>
                         <h4 className="font-bold text-gray-900 capitalize text-lg">{tx.desc}</h4>
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">{tx.category}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{tx.category}</p>
+                          {tx.date && (
+                            <>
+                              <span className="text-gray-300">•</span>
+                              <p className="text-xs font-medium text-gray-400">
+                                {new Date(tx.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+                              </p>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <div className="flex items-center gap-4">

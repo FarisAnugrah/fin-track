@@ -110,7 +110,7 @@ export default function App() {
             </p>
           </div>
           {activeTab !== 'goals' && (
-            <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-spendee-green hover:bg-[#15B065] text-white px-6 py-3 rounded-xl font-semibold shadow-lg shadow-emerald-200/50 transition-transform active:scale-95">
+            <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-spendee-green hover:bg-[#15B065] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-emerald-200/50 transition-transform active:scale-95">
               <Plus className="w-5 h-5" /> Add Transaction
             </button>
           )}
@@ -131,8 +131,12 @@ export default function App() {
               return (
                 <div key={cat.id} className="bg-white p-7 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
                   <div className="flex justify-between items-start mb-6">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${cat.bg} bg-opacity-10`}>
-                      <Icon className={`w-6 h-6 text-${cat.bg.split('-')[1]}-500`} style={{color: cat.bg === 'bg-spendee-green' ? '#19CA75' : cat.bg === 'bg-amber-400' ? '#FBBF24' : '#3B82F6'}} />
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                      cat.id === 'needs' ? 'bg-blue-100 text-blue-500' :
+                      cat.id === 'wants' ? 'bg-amber-100 text-amber-500' :
+                      'bg-emerald-100 text-spendee-green'
+                    }`}>
+                      <Icon className="w-6 h-6" />
                     </div>
                     <span className="text-xs font-bold uppercase tracking-widest text-gray-400">{cat.label}</span>
                   </div>
@@ -140,9 +144,9 @@ export default function App() {
                   <div className="text-3xl font-extrabold text-spendee-dark">{formatCurrency(limit - used)}</div>
                   <div className="text-sm font-medium text-gray-500 mt-1">left to spend</div>
                   
-                  <div className="mt-6 w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-                    <div className={`${cat.bg} h-2 rounded-full transition-all duration-500 ease-out`} style={{ width: `${pct}%` }}></div>
-                  </div>
+                    <div className="mt-6 w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                      <div className={`${cat.bg} h-2 rounded-full transition-all duration-500 ease-out`} style={{ width: `${pct}%` }}></div>
+                    </div>
                   <p className="text-sm font-medium text-gray-400 mt-3">{pct.toFixed(0)}% spent of {formatCurrency(limit)}</p>
                 </div>
               );
@@ -221,11 +225,11 @@ export default function App() {
       {showAddTx && (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
-            <h3 className="text-lg font-bold mb-4">Add Transaction</h3>
+            <h3 className="text-xl font-extrabold mb-6 text-spendee-dark">Add Transaction</h3>
             <form onSubmit={handleAddTx} className="space-y-4">
-              <input type="number" placeholder="Amount" value={txForm.amount} onChange={e => setTxForm({...txForm, amount: e.target.value})} className="w-full border p-2 rounded-lg" required />
-              <input type="text" placeholder="Description" value={txForm.desc} onChange={e => setTxForm({...txForm, desc: e.target.value})} className="w-full border p-2 rounded-lg" required />
-              <select value={txForm.category} onChange={e => setTxForm({...txForm, category: e.target.value})} className="w-full border p-2 rounded-lg">
+              <input type="number" placeholder="Amount" value={txForm.amount} onChange={e => setTxForm({...txForm, amount: e.target.value})} className="w-full border-2 border-gray-200 p-3 rounded-xl focus:border-spendee-green focus:ring-0 outline-none font-medium" required />
+              <input type="text" placeholder="Description" value={txForm.desc} onChange={e => setTxForm({...txForm, desc: e.target.value})} className="w-full border-2 border-gray-200 p-3 rounded-xl focus:border-spendee-green focus:ring-0 outline-none font-medium" required />
+              <select value={txForm.category} onChange={e => setTxForm({...txForm, category: e.target.value})} className="w-full border-2 border-gray-200 p-3 rounded-xl focus:border-spendee-green focus:ring-0 outline-none font-medium">
                 <option value="needs">Needs</option>
                 <option value="wants">Wants</option>
                 <option value="goals">Goals</option>

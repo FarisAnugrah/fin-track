@@ -7,9 +7,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        'spendee-green': '#19CA75',
-        'spendee-dark': '#1F2937',
-        'spendee-light': '#F3F4F6'
+        'spendee-green': '#10B981', // emerald-500
+        'spendee-dark': '#0F172A', // slate-900
+        'spendee-light': '#F8FAFC', // slate-50
+        'pastel-blue': '#60A5FA',
+        'pastel-purple': '#A78BFA',
+        'pastel-pink': '#F472B6',
+        'pastel-yellow': '#FBBF24',
+        'pastel-orange': '#FB923C'
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],

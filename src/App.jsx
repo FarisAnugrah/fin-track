@@ -119,9 +119,9 @@ export default function App() {
         {activeTab === 'dashboard' && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
             {[
-              { id: 'needs', label: 'Needs (50%)', icon: Home, bg: 'bg-blue-500' },
-              { id: 'wants', label: 'Wants (30%)', icon: Coffee, bg: 'bg-amber-400' },
-              { id: 'goals', label: 'Goals (20%)', icon: Target, bg: 'bg-spendee-green' }
+              { id: 'needs', label: 'Needs (50%)', icon: Home, bg: 'bg-[#EFF6FF]', bar: 'bg-[#3B82F6]', text: 'text-[#2563EB]', border: 'border-[#BFDBFE]' },
+              { id: 'wants', label: 'Wants (30%)', icon: Coffee, bg: 'bg-[#FFFBEB]', bar: 'bg-[#F59E0B]', text: 'text-[#D97706]', border: 'border-[#FDE68A]' },
+              { id: 'goals', label: 'Goals (20%)', icon: Target, bg: 'bg-[#FDF4FF]', bar: 'bg-[#D946EF]', text: 'text-[#C026D3]', border: 'border-[#F5D0FE]' }
             ].map(cat => {
               const Icon = cat.icon;
               const limit = budget[cat.id];
@@ -129,25 +129,24 @@ export default function App() {
               const pct = Math.min((used / limit) * 100, 100) || 0;
               
               return (
-                <div key={cat.id} className="bg-white p-7 rounded-[2rem] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all">
+                <div key={cat.id} className={`bg-white p-7 rounded-[2rem] border-2 ${cat.border} shadow-[0_4px_12px_rgba(0,0,0,0.03)] flex flex-col justify-between hover:shadow-[0_8px_24px_rgba(0,0,0,0.06)] transition-all hover:-translate-y-1`}>
                   <div className="flex justify-between items-start mb-6">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                      cat.id === 'needs' ? 'bg-[#EEF2FF] text-[#4F46E5]' :
-                      cat.id === 'wants' ? 'bg-[#FFFBEB] text-[#D97706]' :
-                      'bg-[#ECFDF5] text-[#059669]'
-                    }`}>
-                      <Icon className="w-6 h-6" />
+                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${cat.bg} ${cat.text} shadow-sm`}>
+                      <Icon className="w-7 h-7" />
                     </div>
-                    <span className="text-xs font-bold uppercase tracking-widest text-gray-400">{cat.label}</span>
+                    <span className={`text-xs font-extrabold uppercase tracking-widest ${cat.text} px-3 py-1 rounded-full ${cat.bg}`}>{cat.label}</span>
                   </div>
                   
-                  <div className="text-3xl font-extrabold text-spendee-dark">{formatCurrency(limit - used)}</div>
-                  <div className="text-sm font-medium text-gray-500 mt-1">left to spend</div>
+                  <div className="text-3xl font-black text-spendee-dark mt-2">{formatCurrency(limit - used)}</div>
+                  <div className="text-sm font-bold text-gray-400 mt-1 uppercase tracking-wide">Left to spend</div>
                   
-                  <div className="mt-8 w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-                    <div className={`${cat.id === 'needs' ? 'bg-[#4F46E5]' : cat.id === 'wants' ? 'bg-[#F59E0B]' : 'bg-[#10B981]'} h-2 rounded-full transition-all duration-500 ease-out`} style={{ width: `${pct}%` }}></div>
+                  <div className={`mt-8 w-full ${cat.bg} rounded-full h-3 overflow-hidden shadow-inner border ${cat.border}`}>
+                    <div className={`${cat.bar} h-3 rounded-full transition-all duration-500 ease-out`} style={{ width: `${pct}%` }}></div>
                   </div>
-                  <p className="text-sm font-semibold text-gray-400 mt-4">{pct.toFixed(0)}% spent of {formatCurrency(limit)}</p>
+                  <div className="flex justify-between items-center mt-3">
+                    <p className="text-xs font-bold text-gray-500">{pct.toFixed(0)}% Spent</p>
+                    <p className="text-xs font-bold text-gray-400">of {formatCurrency(limit)}</p>
+                  </div>
                 </div>
               );
             })}
@@ -201,12 +200,12 @@ export default function App() {
             ) : (
               <div className="space-y-4">
                 {transactions.slice().reverse().map(tx => (
-                  <div key={tx.id} className="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-sm bg-white transition-all">
+                  <div key={tx.id} className="flex items-center justify-between p-5 rounded-[1.5rem] border-2 border-gray-100 hover:border-gray-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] bg-white transition-all hover:-translate-y-0.5">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                        tx.category === 'needs' ? 'bg-[#EEF2FF] text-[#4F46E5]' : 
-                        tx.category === 'wants' ? 'bg-[#FFFBEB] text-[#D97706]' : 
-                        'bg-[#ECFDF5] text-[#059669]'
+                      <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm ${
+                        tx.category === 'needs' ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]' : 
+                        tx.category === 'wants' ? 'bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]' : 
+                        'bg-[#FDF4FF] text-[#C026D3] border border-[#F5D0FE]'
                       }`}>
                         {tx.category === 'needs' ? <Home className="w-6 h-6" /> : tx.category === 'wants' ? <Coffee className="w-6 h-6" /> : <Target className="w-6 h-6" />}
                       </div>
@@ -215,7 +214,7 @@ export default function App() {
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">{tx.category}</p>
                       </div>
                     </div>
-                    <div className="font-extrabold text-gray-900 text-lg">
+                    <div className="font-black text-spendee-dark text-xl">
                       -{formatCurrency(tx.amount)}
                     </div>
                   </div>

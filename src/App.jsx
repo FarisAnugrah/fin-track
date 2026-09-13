@@ -150,15 +150,15 @@ export default function App() {
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-[#3B82F6]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#3B82F6] shadow-sm"></div>
                     <span className="text-sm font-bold text-gray-600">Needs</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-[#F59E0B]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#F59E0B] shadow-sm"></div>
                     <span className="text-sm font-bold text-gray-600">Wants</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full bg-[#D946EF]"></div>
+                    <div className="w-3 h-3 rounded-full bg-[#D946EF] shadow-sm"></div>
                     <span className="text-sm font-bold text-gray-600">Goals</span>
                   </div>
                 </div>
@@ -210,8 +210,19 @@ export default function App() {
                 + New Goal
               </button>
             </div>
-            <div className="space-y-4">
-              {goals.map(g => {
+            
+            {goals.length === 0 ? (
+              <div className="text-center py-12 px-4 border-2 border-dashed border-gray-200 rounded-[1.5rem]">
+                <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">🎯</div>
+                <h4 className="font-bold text-gray-900 text-lg mb-2">No active goals</h4>
+                <p className="text-gray-500 font-medium text-sm max-w-sm mx-auto">Set a financial target like buying a house or a car, and we'll help you calculate the inflation-adjusted cost.</p>
+                <button onClick={() => setShowAddGoal(true)} className="mt-6 text-sm bg-[#10B981] text-white px-5 py-2.5 rounded-xl font-bold hover:bg-[#15B065] shadow-lg shadow-emerald-200/50 transition-colors inline-flex items-center gap-2">
+                  <Plus className="w-4 h-4" /> Create First Goal
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {goals.map(g => {
                 const calc = calculateGoal(g);
                 return (
                   <div key={g.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors gap-4">
@@ -250,7 +261,13 @@ export default function App() {
           <section className="bg-white border border-gray-100 rounded-[2rem] shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8">
             <h3 className="text-xl font-extrabold text-[#0F172A] mb-8">Recent Transactions</h3>
             {transactions.length === 0 ? (
-              <p className="text-gray-400 font-medium text-center py-12">No transactions yet. Click 'Add Transaction' to start tracking.</p>
+              <div className="text-center py-16 px-4">
+                <div className="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto mb-6 text-gray-300">
+                  <Activity className="w-10 h-10" />
+                </div>
+                <h4 className="font-bold text-gray-900 text-xl mb-2">Clean slate</h4>
+                <p className="text-gray-500 font-medium text-base max-w-sm mx-auto">You haven't spent any money yet. Click the Add Transaction button to log your first expense.</p>
+              </div>
             ) : (
               <div className="space-y-4">
                 {transactions.slice().reverse().map(tx => (
@@ -270,7 +287,7 @@ export default function App() {
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="font-black text-[#0F172A] text-xl">
-                        -{formatCurrency(tx.amount)}
+                        {formatCurrency(tx.amount)}
                       </div>
                       <button onClick={() => {
                         if(window.confirm(`Delete transaction "${tx.desc}"?`)) removeTransaction(tx.id);

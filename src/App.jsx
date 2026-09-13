@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Target, Activity, Plus, Home, Coffee } from 'lucide-react';
+import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut } from 'lucide-react';
 import { useStore } from './store';
 import AddGoalModal from './AddGoalModal';
+import Onboarding from './Onboarding';
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('id-ID', {
@@ -12,7 +13,12 @@ const formatCurrency = (amount) => {
 };
 
 export default function App() {
-  const { income, getBudget, getSpent, goals, calculateGoal, addTransaction } = useStore();
+  const { hasOnboarded, income, getBudget, getSpent, goals, calculateGoal, addTransaction } = useStore();
+  
+  if (!hasOnboarded) {
+    return <Onboarding />;
+  }
+
   const budget = getBudget();
   const spent = getSpent();
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -55,6 +61,16 @@ export default function App() {
           <h1 className="text-xl font-bold tracking-tight text-gray-900">Reeach</h1>
         </div>
         <nav className="flex-1 space-y-2">{renderNav(false)}</nav>
+        <div className="pt-8 border-t border-gray-100 mt-auto">
+          <button onClick={() => {
+            if(window.confirm('Are you sure you want to reset all your data?')) {
+              localStorage.removeItem('reeach-storage');
+              window.location.reload();
+            }
+          }} className="flex items-center gap-3 px-3 py-2 text-red-500 hover:text-red-700 w-full text-left transition-colors font-medium">
+            <LogOut className="w-5 h-5" /> Reset Data
+          </button>
+        </div>
       </aside>
 
       <main className="flex-1 px-4 md:px-12 py-8 overflow-y-auto">

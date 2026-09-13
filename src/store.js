@@ -4,8 +4,9 @@ import { persist } from 'zustand/middleware';
 export const useStore = create(
   persist(
     (set, get) => ({
-      income: 15000000,
-      setIncome: (income) => set({ income }),
+      hasOnboarded: false,
+      income: 0,
+      setIncome: (income) => set({ income, hasOnboarded: true }),
       
       transactions: [],
       addTransaction: (tx) => set((state) => ({ 

@@ -129,7 +129,43 @@ export default function App() {
         </header>
 
         {activeTab === 'dashboard' && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+          <>
+            <div className="bg-white rounded-[2rem] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 mb-10 flex flex-col md:flex-row items-center gap-10">
+              <div className="relative w-48 h-48 flex-shrink-0">
+                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" strokeWidth="12" />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="12" strokeDasharray={`${(spent.needs / income) * 251.2} 251.2`} />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="12" strokeDasharray={`${(spent.wants / income) * 251.2} 251.2`} strokeDashoffset={-(spent.needs / income) * 251.2} />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#D946EF" strokeWidth="12" strokeDasharray={`${(spent.goals / income) * 251.2} 251.2`} strokeDashoffset={-((spent.needs + spent.wants) / income) * 251.2} />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Total Spent</span>
+                  <span className="text-xl font-black text-[#0F172A] mt-1">{formatCurrency(spent.needs + spent.wants + spent.goals)}</span>
+                </div>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-xl font-extrabold text-[#0F172A] mb-4">Cashflow Summary</h3>
+                <p className="text-gray-500 font-medium leading-relaxed mb-6">
+                  You have spent <strong className="text-[#0F172A]">{(((spent.needs + spent.wants + spent.goals) / income) * 100).toFixed(1)}%</strong> of your {formatCurrency(income)} monthly income.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#3B82F6]"></div>
+                    <span className="text-sm font-bold text-gray-600">Needs</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#F59E0B]"></div>
+                    <span className="text-sm font-bold text-gray-600">Wants</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-[#D946EF]"></div>
+                    <span className="text-sm font-bold text-gray-600">Goals</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
             {[
               { id: 'needs', label: 'Needs (50%)', icon: Home, bg: 'bg-[#EFF6FF]', bar: 'bg-[#3B82F6]', text: 'text-[#2563EB]', border: 'border-[#BFDBFE]' },
               { id: 'wants', label: 'Wants (30%)', icon: Coffee, bg: 'bg-[#FFFBEB]', bar: 'bg-[#F59E0B]', text: 'text-[#D97706]', border: 'border-[#FDE68A]' },
@@ -163,6 +199,7 @@ export default function App() {
               );
             })}
           </div>
+          </>
         )}
 
         {activeTab === 'goals' && (

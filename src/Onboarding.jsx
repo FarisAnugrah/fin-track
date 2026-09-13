@@ -19,7 +19,7 @@ export default function Onboarding() {
           <Target className="text-white w-8 h-8" />
         </div>
         
-        <h1 className="text-2xl font-bold mb-2">Welcome to Reeach</h1>
+        <h1 className="text-2xl font-bold mb-2">Welcome to FinTrack</h1>
         <p className="text-gray-500 mb-8 text-sm">To build your 50/30/20 budget and SMART goals, let's start with your monthly income.</p>
         
         <form onSubmit={handleSubmit} className="space-y-6">

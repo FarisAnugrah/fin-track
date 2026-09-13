@@ -58,13 +58,13 @@ export default function App() {
           <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
              <Target className="text-white w-5 h-5" />
           </div>
-          <h1 className="text-xl font-bold tracking-tight text-gray-900">Reeach</h1>
+          <h1 className="text-xl font-bold tracking-tight text-gray-900">FinTrack</h1>
         </div>
         <nav className="flex-1 space-y-2">{renderNav(false)}</nav>
         <div className="pt-8 border-t border-gray-100 mt-auto">
           <button onClick={() => {
             if(window.confirm('Are you sure you want to reset all your data?')) {
-              localStorage.removeItem('reeach-storage');
+              localStorage.removeItem('fintrack-storage');
               window.location.reload();
             }
           }} className="flex items-center gap-3 px-3 py-2 text-red-500 hover:text-red-700 w-full text-left transition-colors font-medium">

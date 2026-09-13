@@ -59,7 +59,7 @@ export const useStore = create(
       }
     }),
     {
-      name: 'reeach-storage', 
+      name: 'fintrack-storage', 
     }
   )
 );

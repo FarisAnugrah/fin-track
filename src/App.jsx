@@ -94,7 +94,14 @@ export default function App() {
   const handleAddTx = (e) => {
     e.preventDefault();
     if (!txForm.amount) return;
-    addTransaction({ ...txForm, amount: Number(txForm.amount) });
+    
+    // Create transaction using the currently selected month in the UI
+    addTransaction({ 
+      ...txForm, 
+      amount: Number(txForm.amount),
+      date: currentDate.toISOString() // This binds the transaction to the month currently being viewed
+    });
+    
     setShowAddTx(false);
     setTxForm({ amount: '', category: 'needs', desc: '' });
   };

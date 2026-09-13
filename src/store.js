@@ -10,7 +10,8 @@ export const useStore = create(
       
       transactions: [],
       addTransaction: (tx) => set((state) => ({ 
-        transactions: [...state.transactions, { ...tx, id: Date.now().toString(), date: new Date().toISOString() }] 
+        // If tx already has a date from the UI (like historical input), use it, otherwise fallback to now
+        transactions: [...state.transactions, { ...tx, id: Date.now().toString(), date: tx.date || new Date().toISOString() }] 
       })),
       removeTransaction: (id) => set((state) => ({
         transactions: state.transactions.filter(t => t.id !== id)

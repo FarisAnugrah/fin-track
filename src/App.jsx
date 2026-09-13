@@ -53,6 +53,7 @@ export default function App() {
   // Search & Filter State
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
+  const [selectedTx, setSelectedTx] = useState(null);
 
   const filteredTransactions = transactions.filter(tx => {
     const matchesSearch = tx.desc.toLowerCase().includes(searchTerm.toLowerCase());
@@ -313,7 +314,7 @@ export default function App() {
             ) : (
               <div className="space-y-4">
                 {filteredTransactions.slice().reverse().map(tx => (
-                  <div key={tx.id} className="flex items-center justify-between p-5 rounded-[1.5rem] border-2 border-gray-100 hover:border-gray-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] bg-white transition-all hover:-translate-y-0.5">
+                  <div key={tx.id} onClick={() => setSelectedTx(tx)} className="flex items-center justify-between p-5 rounded-[1.5rem] border-2 border-gray-100 hover:border-gray-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] bg-white transition-all hover:-translate-y-0.5 cursor-pointer">
                     <div className="flex items-center gap-4">
                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0 ${
                         tx.category === 'needs' ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]' : 
@@ -341,11 +342,6 @@ export default function App() {
                       <div className="font-black text-[#0F172A] text-xl">
                         {formatCurrency(tx.amount)}
                       </div>
-                      <button onClick={() => {
-                        if(window.confirm(`Delete transaction "${tx.desc}"?`)) removeTransaction(tx.id);
-                      }} className="p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
-                        <Trash2 className="w-5 h-5" />
-                      </button>
                     </div>
                   </div>
                 ))}
@@ -410,6 +406,58 @@ export default function App() {
       )}
 
       {showAddGoal && <AddGoalModal onClose={() => setShowAddGoal(false)} />}
+
+      {selectedTx && (
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-end md:items-center justify-center p-4 z-50 transition-all" onClick={() => setSelectedTx(null)}>
+          <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl border border-gray-100 mb-20 md:mb-0" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-start mb-8">
+              <div className={`w-16 h-16 rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0 ${
+                selectedTx.category === 'needs' ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]' : 
+                selectedTx.category === 'wants' ? 'bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]' : 
+                'bg-[#FDF4FF] text-[#C026D3] border border-[#F5D0FE]'
+              }`}>
+                {selectedTx.category === 'needs' ? <Home className="w-8 h-8" /> : selectedTx.category === 'wants' ? <Coffee className="w-8 h-8" /> : <Target className="w-8 h-8" />}
+              </div>
+              <button onClick={() => {
+                if(window.confirm(`Delete transaction "${selectedTx.desc}"?`)) {
+                  removeTransaction(selectedTx.id);
+                  setSelectedTx(null);
+                }
+              }} className="p-3 text-red-500 bg-red-50 hover:bg-red-100 transition-colors rounded-xl flex items-center gap-2 font-bold text-sm">
+                <Trash2 className="w-4 h-4" /> Delete
+              </button>
+            </div>
+            
+            <div className="mb-8">
+              <h3 className="text-3xl font-black text-[#0F172A] mb-1">{formatCurrency(selectedTx.amount)}</h3>
+              <p className="text-gray-500 font-medium capitalize text-lg">{selectedTx.desc}</p>
+            </div>
+
+            <div className="space-y-4 mb-8">
+              <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <span className="text-gray-400 font-bold text-sm">Category</span>
+                <span className="font-bold text-[#0F172A] uppercase tracking-wider text-sm">{selectedTx.category}</span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <span className="text-gray-400 font-bold text-sm">Date</span>
+                <span className="font-bold text-[#0F172A] text-sm">
+                  {selectedTx.date ? new Date(selectedTx.date).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'Unknown'}
+                </span>
+              </div>
+              <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                <span className="text-gray-400 font-bold text-sm">Time</span>
+                <span className="font-bold text-[#0F172A] text-sm">
+                  {selectedTx.date ? new Date(selectedTx.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute:'2-digit' }) : '--:--'}
+                </span>
+              </div>
+            </div>
+
+            <button onClick={() => setSelectedTx(null)} className="w-full py-4 font-bold bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
+              Close Details
+            </button>
+          </div>
+        </div>
+      )}
 
       <nav className="md:hidden fixed bottom-0 w-full bg-white border-t border-gray-100 px-2 py-2 flex justify-around items-center z-40 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
         {renderNav(true)}

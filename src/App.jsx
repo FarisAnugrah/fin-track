@@ -81,7 +81,7 @@ export default function App() {
     <div className="min-h-screen bg-spendee-light flex flex-col md:flex-row font-sans text-gray-900 pb-20 md:pb-0">
       <aside className="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 px-6 py-8 shadow-[2px_0_10px_rgba(0,0,0,0.02)] z-10">
         <div className="flex items-center gap-3 mb-10 pl-2">
-          <div className="w-10 h-10 bg-spendee-green rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
+          <div className="w-10 h-10 bg-[#10B981] rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
              <Target className="text-white w-6 h-6" />
           </div>
           <h1 className="text-2xl font-extrabold tracking-tight text-spendee-dark">FinTrack</h1>

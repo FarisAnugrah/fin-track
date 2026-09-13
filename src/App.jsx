@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2, Search, Filter, Download, Upload, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useStore } from './store';
 import AddGoalModal from './AddGoalModal';
 import Onboarding from './Onboarding';
@@ -114,6 +114,43 @@ export default function App() {
     if (!incomeForm || Number(incomeForm) <= 0) return;
     setIncome(Number(incomeForm));
     alert('Income updated successfully!');
+  };
+
+  const exportData = () => {
+    const data = localStorage.getItem('fintrack-storage');
+    if (!data) return alert('No data to export.');
+    
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `fintrack-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const importData = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const json = JSON.parse(event.target.result);
+        if (json && json.state) {
+          localStorage.setItem('fintrack-storage', event.target.result);
+          alert('Data imported successfully! The app will now reload.');
+          window.location.reload();
+        } else {
+          alert('Invalid backup file format.');
+        }
+      } catch (err) {
+        alert('Failed to read backup file.');
+      }
+    };
+    reader.readAsText(file);
   };
 
   const renderNav = (isMobile) => {
@@ -406,21 +443,41 @@ export default function App() {
         )}
 
         {activeTab === 'settings' && (
-          <section className="bg-white border border-gray-100 rounded-[2rem] shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 max-w-2xl">
-            <h3 className="text-xl font-extrabold text-[#0F172A] mb-8">Update Income</h3>
-            <form onSubmit={handleUpdateIncome} className="space-y-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Monthly Income (Rp)</label>
-                <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
-                  <input type="number" value={incomeForm} onChange={e => setIncomeForm(e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 pl-12 pr-4 py-3.5 rounded-xl focus:border-[#10B981] focus:bg-white focus:ring-0 outline-none font-extrabold text-[#0F172A] text-lg transition-colors" required />
+          <div className="max-w-2xl space-y-8">
+            <section className="bg-white border border-gray-100 rounded-[2rem] shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8">
+              <h3 className="text-xl font-extrabold text-[#0F172A] mb-8">Update Income</h3>
+              <form onSubmit={handleUpdateIncome} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-bold text-gray-700 mb-2">Monthly Income (Rp)</label>
+                  <div className="relative">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
+                    <input type="number" value={incomeForm} onChange={e => setIncomeForm(e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 pl-12 pr-4 py-3.5 rounded-xl focus:border-[#10B981] focus:bg-white focus:ring-0 outline-none font-extrabold text-[#0F172A] text-lg transition-colors" required />
+                  </div>
                 </div>
+                <button type="submit" className="px-6 py-3.5 font-bold bg-[#10B981] text-white rounded-xl hover:bg-[#15B065] transition-all shadow-lg shadow-emerald-200 active:scale-95">
+                  Save Changes
+                </button>
+              </form>
+            </section>
+
+            <section className="bg-white border border-gray-100 rounded-[2rem] shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8">
+              <div className="mb-6">
+                <h3 className="text-xl font-extrabold text-[#0F172A]">Data Management</h3>
+                <p className="text-gray-500 font-medium mt-1">Backup your data to a file or restore from a previous backup.</p>
               </div>
-              <button type="submit" className="px-6 py-3.5 font-bold bg-[#10B981] text-white rounded-xl hover:bg-[#15B065] transition-all shadow-lg shadow-emerald-200 active:scale-95">
-                Save Changes
-              </button>
-            </form>
-          </section>
+              
+              <div className="flex flex-col sm:flex-row gap-4">
+                <button onClick={exportData} className="flex-1 flex items-center justify-center gap-2 bg-[#0F172A] hover:bg-gray-800 text-white px-6 py-4 rounded-xl font-bold shadow-lg shadow-gray-200 transition-transform active:scale-95">
+                  <Download className="w-5 h-5" /> Export Backup
+                </button>
+                
+                <label className="flex-1 flex items-center justify-center gap-2 bg-white border-2 border-gray-200 hover:border-gray-300 text-gray-700 px-6 py-4 rounded-xl font-bold transition-all active:scale-95 cursor-pointer">
+                  <Upload className="w-5 h-5" /> Import Data
+                  <input type="file" accept=".json" onChange={importData} className="hidden" />
+                </label>
+              </div>
+            </section>
+          </div>
         )}
       </main>
 

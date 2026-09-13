@@ -62,13 +62,16 @@ export default function App() {
 
   // Filter transactions for current month
   const currentMonthTransactions = transactions.filter(tx => {
-    if (!tx.date) return true; // Include old transactions without dates in current view
+    // If transaction doesn't have a date, assume it belongs to the month it was created
+    // But since we can't know, we'll assign it to the current month to avoid data loss
+    if (!tx.date) return true; 
+    
     const txDate = new Date(tx.date);
     return txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear;
   });
 
   // Calculate spent based ONLY on current month's transactions
-  const spent = currentMonthTransactions.reduce((acc, tx) => {
+  const currentSpent = currentMonthTransactions.reduce((acc, tx) => {
     acc[tx.category] = (acc[tx.category] || 0) + tx.amount;
     return acc;
   }, { needs: 0, wants: 0, goals: 0 });
@@ -197,19 +200,19 @@ export default function App() {
               <div className="relative w-48 h-48 flex-shrink-0">
                 <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
                   <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" strokeWidth="12" />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="12" strokeDasharray={`${(spent.needs / income) * 251.2} 251.2`} />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="12" strokeDasharray={`${(spent.wants / income) * 251.2} 251.2`} strokeDashoffset={-(spent.needs / income) * 251.2} />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#D946EF" strokeWidth="12" strokeDasharray={`${(spent.goals / income) * 251.2} 251.2`} strokeDashoffset={-((spent.needs + spent.wants) / income) * 251.2} />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="12" strokeDasharray={`${(currentSpent.needs / income) * 251.2} 251.2`} />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="12" strokeDasharray={`${(currentSpent.wants / income) * 251.2} 251.2`} strokeDashoffset={-(currentSpent.needs / income) * 251.2} />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#D946EF" strokeWidth="12" strokeDasharray={`${(currentSpent.goals / income) * 251.2} 251.2`} strokeDashoffset={-((currentSpent.needs + currentSpent.wants) / income) * 251.2} />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Total Spent</span>
-                  <span className="text-xl font-black text-[#0F172A] mt-1">{formatCurrency(spent.needs + spent.wants + spent.goals)}</span>
+                  <span className="text-xl font-black text-[#0F172A] mt-1">{formatCurrency(currentSpent.needs + currentSpent.wants + currentSpent.goals)}</span>
                 </div>
               </div>
               <div className="flex-1">
                 <h3 className="text-xl font-extrabold text-[#0F172A] mb-4">Cashflow Summary</h3>
                 <p className="text-gray-500 font-medium leading-relaxed mb-6">
-                  You have spent <strong className="text-[#0F172A]">{(((spent.needs + spent.wants + spent.goals) / income) * 100).toFixed(1)}%</strong> of your {formatCurrency(income)} monthly income.
+                  You have spent <strong className="text-[#0F172A]">{(((currentSpent.needs + currentSpent.wants + currentSpent.goals) / income) * 100).toFixed(1)}%</strong> of your {formatCurrency(income)} monthly income.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <div className="flex items-center gap-2">
@@ -236,7 +239,7 @@ export default function App() {
             ].map(cat => {
               const Icon = cat.icon;
               const limit = budget[cat.id];
-              const used = spent[cat.id];
+              const used = currentSpent[cat.id];
               const pct = Math.min((used / limit) * 100, 100) || 0;
               
               return (

@@ -59,6 +59,8 @@ export default function App() {
     const matchesCategory = filterCategory === 'all' || tx.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleAddTx = (e) => {
     e.preventDefault();
     if (!txForm.amount) return;
     addTransaction({ ...txForm, amount: Number(txForm.amount) });

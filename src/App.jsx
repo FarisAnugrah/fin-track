@@ -200,9 +200,9 @@ export default function App() {
               <div className="relative w-48 h-48 flex-shrink-0">
                 <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
                   <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" strokeWidth="12" />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="12" strokeDasharray={`${(currentSpent.needs / income) * 251.2} 251.2`} />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="12" strokeDasharray={`${(currentSpent.wants / income) * 251.2} 251.2`} strokeDashoffset={-(currentSpent.needs / income) * 251.2} />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#D946EF" strokeWidth="12" strokeDasharray={`${(currentSpent.goals / income) * 251.2} 251.2`} strokeDashoffset={-((currentSpent.needs + currentSpent.wants) / income) * 251.2} />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="12" strokeDasharray={`${Math.min((currentSpent.needs / income) * 251.2, 251.2)} 251.2`} />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="12" strokeDasharray={`${Math.min((currentSpent.wants / income) * 251.2, 251.2)} 251.2`} strokeDashoffset={-(currentSpent.needs / income) * 251.2} />
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#D946EF" strokeWidth="12" strokeDasharray={`${Math.min((currentSpent.goals / income) * 251.2, 251.2)} 251.2`} strokeDashoffset={-((currentSpent.needs + currentSpent.wants) / income) * 251.2} />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Total Spent</span>

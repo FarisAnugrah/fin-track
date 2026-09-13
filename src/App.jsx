@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut } from 'lucide-react';
+import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2 } from 'lucide-react';
 import { useStore } from './store';
 import AddGoalModal from './AddGoalModal';
 import Onboarding from './Onboarding';
@@ -13,12 +13,12 @@ const formatCurrency = (amount) => {
 };
 
 export default function App() {
-  const { hasOnboarded, income, getBudget, getSpent, goals, calculateGoal, addTransaction, transactions } = useStore();
+  const { hasOnboarded, income, setIncome, getBudget, getSpent, goals, calculateGoal, addTransaction, transactions, removeTransaction, removeGoal } = useStore();
   
   // Initialize from hash or default to dashboard
   const [activeTab, setActiveTab] = useState(() => {
     const hash = window.location.hash.replace('#', '');
-    return ['dashboard', 'cashflow', 'goals'].includes(hash) ? hash : 'dashboard';
+    return ['dashboard', 'cashflow', 'goals', 'settings'].includes(hash) ? hash : 'dashboard';
   });
 
   // Sync state to URL hash
@@ -30,7 +30,7 @@ export default function App() {
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash.replace('#', '');
-      if (['dashboard', 'cashflow', 'goals'].includes(hash)) {
+      if (['dashboard', 'cashflow', 'goals', 'settings'].includes(hash)) {
         setActiveTab(hash);
       }
     };
@@ -48,6 +48,7 @@ export default function App() {
   const [showAddGoal, setShowAddGoal] = useState(false);
 
   const [txForm, setTxForm] = useState({ amount: '', category: 'needs', desc: '' });
+  const [incomeForm, setIncomeForm] = useState(income.toString());
 
   const handleAddTx = (e) => {
     e.preventDefault();
@@ -55,6 +56,13 @@ export default function App() {
     addTransaction({ ...txForm, amount: Number(txForm.amount) });
     setShowAddTx(false);
     setTxForm({ amount: '', category: 'needs', desc: '' });
+  };
+
+  const handleUpdateIncome = (e) => {
+    e.preventDefault();
+    if (!incomeForm || Number(incomeForm) <= 0) return;
+    setIncome(Number(incomeForm));
+    alert('Income updated successfully!');
   };
 
   const renderNav = (isMobile) => {
@@ -72,6 +80,10 @@ export default function App() {
         <button onClick={() => setActiveTab('goals')} className={btnClass('goals')}>
           <Target className={isMobile ? "w-6 h-6 mb-1" : "w-5 h-5"} />
           <span className={isMobile ? "text-[10px] font-medium" : ""}>Goals</span>
+        </button>
+        <button onClick={() => setActiveTab('settings')} className={btnClass('settings')}>
+          <Settings className={isMobile ? "w-6 h-6 mb-1" : "w-5 h-5"} />
+          <span className={isMobile ? "text-[10px] font-medium" : ""}>Settings</span>
         </button>
       </>
     );
@@ -103,13 +115,13 @@ export default function App() {
         <header className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4 mt-2">
           <div>
             <h2 className="text-3xl font-extrabold tracking-tight text-[#0F172A]">
-              {activeTab === 'dashboard' ? 'Budget Overview' : activeTab === 'goals' ? 'SMART Goals' : 'Cashflow'}
+              {activeTab === 'dashboard' ? 'Budget Overview' : activeTab === 'goals' ? 'SMART Goals' : activeTab === 'cashflow' ? 'Cashflow' : 'Settings'}
             </h2>
             <p className="text-gray-500 font-medium mt-1">
-              {activeTab === 'dashboard' ? 'Track your 50/30/20 budget limits.' : activeTab === 'goals' ? 'Inflation-adjusted financial targets.' : 'Your recent transactions.'}
+              {activeTab === 'dashboard' ? 'Track your 50/30/20 budget limits.' : activeTab === 'goals' ? 'Inflation-adjusted financial targets.' : activeTab === 'cashflow' ? 'Your recent transactions.' : 'Manage your preferences.'}
             </p>
           </div>
-          {activeTab !== 'goals' && (
+          {activeTab !== 'goals' && activeTab !== 'settings' && (
             <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-[#0F172A] hover:bg-gray-800 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-gray-200 transition-transform active:scale-95">
               <Plus className="w-5 h-5" /> Add Transaction
             </button>
@@ -185,6 +197,11 @@ export default function App() {
                         </div>
                       )}
                     </div>
+                    <button onClick={() => {
+                      if(window.confirm(`Delete goal "${g.name}"?`)) removeGoal(g.id);
+                    }} className="absolute top-4 right-4 md:relative md:top-0 md:right-0 p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
+                      <Trash2 className="w-5 h-5" />
+                    </button>
                   </div>
                 )
               })}
@@ -214,13 +231,38 @@ export default function App() {
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-0.5">{tx.category}</p>
                       </div>
                     </div>
-                    <div className="font-black text-[#0F172A] text-xl">
-                      -{formatCurrency(tx.amount)}
+                    <div className="flex items-center gap-4">
+                      <div className="font-black text-[#0F172A] text-xl">
+                        -{formatCurrency(tx.amount)}
+                      </div>
+                      <button onClick={() => {
+                        if(window.confirm(`Delete transaction "${tx.desc}"?`)) removeTransaction(tx.id);
+                      }} className="p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
+                        <Trash2 className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
                 ))}
               </div>
             )}
+          </section>
+        )}
+
+        {activeTab === 'settings' && (
+          <section className="bg-white border border-gray-100 rounded-[2rem] shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 max-w-2xl">
+            <h3 className="text-xl font-extrabold text-[#0F172A] mb-8">Update Income</h3>
+            <form onSubmit={handleUpdateIncome} className="space-y-6">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Monthly Income (Rp)</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
+                  <input type="number" value={incomeForm} onChange={e => setIncomeForm(e.target.value)} className="w-full bg-gray-50 border-2 border-gray-100 pl-12 pr-4 py-3.5 rounded-xl focus:border-[#10B981] focus:bg-white focus:ring-0 outline-none font-extrabold text-[#0F172A] text-lg transition-colors" required />
+                </div>
+              </div>
+              <button type="submit" className="px-6 py-3.5 font-bold bg-[#10B981] text-white rounded-xl hover:bg-[#15B065] transition-all shadow-lg shadow-emerald-200 active:scale-95">
+                Save Changes
+              </button>
+            </form>
           </section>
         )}
       </main>

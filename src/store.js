@@ -12,6 +12,9 @@ export const useStore = create(
       addTransaction: (tx) => set((state) => ({ 
         transactions: [...state.transactions, { ...tx, id: Date.now().toString() }] 
       })),
+      removeTransaction: (id) => set((state) => ({
+        transactions: state.transactions.filter(t => t.id !== id)
+      })),
 
       goals: [
         {
@@ -20,11 +23,14 @@ export const useStore = create(
           currentCost: 100000000,
           years: 2,
           inflationRate: 0.04,
-          icon: '🏠'
+          icon: '🎯'
         }
       ],
       addGoal: (goal) => set((state) => ({
         goals: [...state.goals, { ...goal, id: Date.now().toString() }]
+      })),
+      removeGoal: (id) => set((state) => ({
+        goals: state.goals.filter(g => g.id !== id)
       })),
 
       getBudget: () => {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { LayoutDashboard, Target, Activity, Plus, Home, Coffee } from 'lucide-react';
 import { useStore } from './store';
+import AddGoalModal from './AddGoalModal';
 
 const formatCurrency = (amount) => {
   return new Intl.NumberFormat('id-ID', {
@@ -16,6 +17,7 @@ export default function App() {
   const spent = getSpent();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showAddTx, setShowAddTx] = useState(false);
+  const [showAddGoal, setShowAddGoal] = useState(false);
 
   const [txForm, setTxForm] = useState({ amount: '', category: 'needs', desc: '' });
 
@@ -94,7 +96,14 @@ export default function App() {
         )}
 
         <section className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Active Goals</h3>
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-lg font-semibold text-gray-900">Active Goals</h3>
+            {activeTab === 'goals' && (
+              <button onClick={() => setShowAddGoal(true)} className="text-sm bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg font-medium hover:bg-indigo-100">
+                + New Goal
+              </button>
+            )}
+          </div>
           <div className="space-y-4">
             {goals.map(g => {
               const calc = calculateGoal(g);
@@ -134,13 +143,15 @@ export default function App() {
                 <option value="goals">Goals</option>
               </select>
               <div className="flex gap-2 justify-end mt-6">
-                <button type="button" onClick={() => setShowAddTx(false)} className="px-4 py-2 text-gray-500">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg">Save</button>
+                <button type="button" onClick={() => setShowAddTx(false)} className="px-4 py-2 text-gray-500 hover:bg-gray-50 rounded-lg">Cancel</button>
+                <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Save</button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {showAddGoal && <AddGoalModal onClose={() => setShowAddGoal(false)} />}
 
       <nav className="md:hidden fixed bottom-0 w-full bg-white border-t border-gray-200 px-6 py-3 flex justify-around items-center z-40">
         {renderNav(true)}

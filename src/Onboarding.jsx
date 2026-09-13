@@ -15,7 +15,7 @@ export default function Onboarding() {
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex flex-col items-center justify-center p-6 text-gray-900">
       <div className="w-full max-w-md bg-white p-10 rounded-[2rem] shadow-xl shadow-gray-200/50 text-center">
-        <div className="w-20 h-20 bg-spendee-green rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-emerald-200/50">
+        <div className="w-20 h-20 bg-spendee-green rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-emerald-200">
           <Target className="text-white w-10 h-10" />
         </div>
         

@@ -79,9 +79,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-spendee-light flex flex-col md:flex-row font-sans text-gray-900 pb-20 md:pb-0">
-      <aside className="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 px-6 py-8 shadow-sm z-10">
+      <aside className="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 px-6 py-8 shadow-[2px_0_10px_rgba(0,0,0,0.02)] z-10">
         <div className="flex items-center gap-3 mb-10 pl-2">
-          <div className="w-10 h-10 bg-spendee-green rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200/50">
+          <div className="w-10 h-10 bg-spendee-green rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200">
              <Target className="text-white w-6 h-6" />
           </div>
           <h1 className="text-2xl font-extrabold tracking-tight text-spendee-dark">FinTrack</h1>
@@ -110,7 +110,7 @@ export default function App() {
             </p>
           </div>
           {activeTab !== 'goals' && (
-            <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-spendee-dark hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-gray-200 transition-transform active:scale-95">
+            <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-spendee-dark hover:bg-gray-800 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-gray-200 transition-transform active:scale-95">
               <Plus className="w-5 h-5" /> Add Transaction
             </button>
           )}
@@ -227,20 +227,35 @@ export default function App() {
       </main>
 
       {showAddTx && (
-        <div className="fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 transition-all">
+          <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl border border-gray-100">
             <h3 className="text-xl font-extrabold mb-6 text-spendee-dark">Add Transaction</h3>
-            <form onSubmit={handleAddTx} className="space-y-4">
-              <input type="number" placeholder="Amount" value={txForm.amount} onChange={e => setTxForm({...txForm, amount: e.target.value})} className="w-full border-2 border-gray-200 p-3 rounded-xl focus:border-spendee-green focus:ring-0 outline-none font-medium" required />
-              <input type="text" placeholder="Description" value={txForm.desc} onChange={e => setTxForm({...txForm, desc: e.target.value})} className="w-full border-2 border-gray-200 p-3 rounded-xl focus:border-spendee-green focus:ring-0 outline-none font-medium" required />
-              <select value={txForm.category} onChange={e => setTxForm({...txForm, category: e.target.value})} className="w-full border-2 border-gray-200 p-3 rounded-xl focus:border-spendee-green focus:ring-0 outline-none font-medium">
-                <option value="needs">Needs</option>
-                <option value="wants">Wants</option>
-                <option value="goals">Goals</option>
-              </select>
-              <div className="flex gap-3 justify-end mt-8">
-                <button type="button" onClick={() => setShowAddTx(false)} className="px-5 py-3 font-semibold text-gray-500 hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
-                <button type="submit" className="px-5 py-3 font-semibold bg-spendee-green text-white rounded-xl hover:bg-[#15B065] transition-colors shadow-md shadow-emerald-200">Save</button>
+            <form onSubmit={handleAddTx} className="space-y-5">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Amount (Rp)</label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">Rp</span>
+                  <input type="number" placeholder="0" value={txForm.amount} onChange={e => setTxForm({...txForm, amount: e.target.value})} className="w-full bg-gray-50 border-2 border-gray-100 pl-12 pr-4 py-3.5 rounded-xl focus:border-spendee-green focus:bg-white focus:ring-0 outline-none font-extrabold text-spendee-dark text-lg transition-colors" required />
+                </div>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Description</label>
+                <input type="text" placeholder="e.g. Lunch, Rent" value={txForm.desc} onChange={e => setTxForm({...txForm, desc: e.target.value})} className="w-full bg-gray-50 border-2 border-gray-100 p-3.5 rounded-xl focus:border-spendee-green focus:bg-white focus:ring-0 outline-none font-bold text-spendee-dark transition-colors" required />
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Category</label>
+                <select value={txForm.category} onChange={e => setTxForm({...txForm, category: e.target.value})} className="w-full bg-gray-50 border-2 border-gray-100 p-3.5 rounded-xl focus:border-spendee-green focus:bg-white focus:ring-0 outline-none font-bold text-spendee-dark transition-colors appearance-none cursor-pointer">
+                  <option value="needs">Needs (Essential)</option>
+                  <option value="wants">Wants (Lifestyle)</option>
+                  <option value="goals">Goals (Savings)</option>
+                </select>
+              </div>
+
+              <div className="flex gap-3 justify-end mt-8 pt-2">
+                <button type="button" onClick={() => setShowAddTx(false)} className="px-5 py-3.5 font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition-colors w-full">Cancel</button>
+                <button type="submit" className="px-5 py-3.5 font-bold bg-spendee-green text-white rounded-xl hover:bg-[#15B065] transition-all shadow-lg shadow-emerald-200 w-full active:scale-95">Save</button>
               </div>
             </form>
           </div>

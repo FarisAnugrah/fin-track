@@ -220,9 +220,9 @@ export default function App() {
                   <Plus className="w-4 h-4" /> Create First Goal
                 </button>
               </div>
-            ) : (
-              <div className="space-y-4">
-                {goals.map(g => {
+          ) : (
+            <div className="space-y-4">
+              {goals.map(g => {
                 const calc = calculateGoal(g);
                 return (
                   <div key={g.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors gap-4">
@@ -254,6 +254,7 @@ export default function App() {
                 )
               })}
             </div>
+            )}
           </section>
         )}
 

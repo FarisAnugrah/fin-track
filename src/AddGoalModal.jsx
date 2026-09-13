@@ -79,9 +79,9 @@ export default function AddGoalModal({ onClose }) {
             </div>
           </div>
 
-          <div className="flex gap-2 justify-end mt-6 pt-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-gray-500 hover:bg-gray-50 rounded-lg">Cancel</button>
-            <button type="submit" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Calculate & Save</button>
+          <div className="flex gap-3 justify-end mt-8 pt-2">
+            <button type="button" onClick={onClose} className="px-5 py-3 font-semibold text-gray-500 hover:bg-gray-100 rounded-xl transition-colors">Cancel</button>
+            <button type="submit" className="px-5 py-3 font-semibold bg-spendee-green text-white rounded-xl hover:bg-[#15B065] transition-colors shadow-md shadow-emerald-200">Calculate & Save</button>
           </div>
         </form>
       </div>

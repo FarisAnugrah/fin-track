@@ -7,10 +7,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        'reeach-purple': '#5A3F9C',
-        'reeach-light': '#F5F5F7',
-        'reeach-green': '#34C759',
-        'reeach-red': '#FF3B30'
+        'spendee-green': '#19CA75',
+        'spendee-dark': '#1F2937',
+        'spendee-light': '#F3F4F6'
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
       }
     },
   },

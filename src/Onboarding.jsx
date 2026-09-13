@@ -14,29 +14,29 @@ export default function Onboarding() {
 
   return (
     <div className="min-h-screen bg-[#F8F9FA] flex flex-col items-center justify-center p-6 text-gray-900">
-      <div className="w-full max-w-md bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-center">
-        <div className="w-16 h-16 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-200">
-          <Target className="text-white w-8 h-8" />
+      <div className="w-full max-w-md bg-white p-10 rounded-[2rem] shadow-xl shadow-gray-200/50 text-center">
+        <div className="w-20 h-20 bg-spendee-dark rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg shadow-gray-200">
+          <Target className="text-white w-10 h-10" />
         </div>
         
-        <h1 className="text-2xl font-bold mb-2">Welcome to FinTrack</h1>
-        <p className="text-gray-500 mb-8 text-sm">To build your 50/30/20 budget and SMART goals, let's start with your monthly income.</p>
+        <h1 className="text-3xl font-extrabold mb-3 text-spendee-dark">Welcome to FinTrack</h1>
+        <p className="text-gray-500 mb-10 font-medium">To build your 50/30/20 budget and SMART goals, let's start with your monthly income.</p>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-8">
           <div className="relative">
-            <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">Rp</span>
+            <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-lg">Rp</span>
             <input 
               type="number" 
               value={val}
               onChange={e => setVal(e.target.value)}
               placeholder="e.g. 15000000" 
-              className="w-full border-2 border-gray-200 pl-12 pr-4 py-3 rounded-xl focus:border-indigo-600 focus:ring-0 outline-none text-lg font-medium transition-colors"
+              className="w-full bg-gray-50 border-2 border-gray-100 pl-14 pr-4 py-4 rounded-2xl focus:border-spendee-green focus:bg-white outline-none text-xl font-bold text-spendee-dark transition-all"
               required
             />
           </div>
           <button 
             type="submit" 
-            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3.5 rounded-xl shadow-md transition-all active:scale-[0.98]"
+            className="w-full bg-spendee-green hover:bg-[#15B065] text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-200/50 transition-all active:scale-[0.98] text-lg"
           >
             Start Budgeting
           </button>

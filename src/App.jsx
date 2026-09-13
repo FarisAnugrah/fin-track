@@ -221,39 +221,39 @@ export default function App() {
                 </button>
               </div>
           ) : (
-            <div className="space-y-4">
-              {goals.map(g => {
-                const calc = calculateGoal(g);
-                return (
-                  <div key={g.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors gap-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-xl border border-gray-100">
-                        {g.icon || '🎯'}
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-gray-900 text-lg">{g.name}</h4>
-                        <p className="text-sm text-gray-500 font-medium">In {g.years * 12} months ({g.inflationRate*100}% inflation) → {formatCurrency(calc.futureCost)}</p>
-                      </div>
-                    </div>
-                    <div className="text-left md:text-right">
-                      <div className="font-extrabold text-[#0F172A] text-lg">{formatCurrency(calc.monthlyRequired)} <span className="text-sm font-medium text-gray-400">/ mo</span></div>
-                      {calc.isAchievable ? (
-                        <div className="text-xs text-[#10B981] font-bold mt-1 bg-green-50 inline-block px-3 py-1 rounded-lg">Achievable</div>
-                      ) : (
-                        <div className="text-xs text-red-600 font-bold mt-1 bg-red-50 inline-block px-3 py-1 rounded-lg">
-                          Requires {formatCurrency(calc.monthlyRequired - (income*0.2))} more/mo or +{calc.monthsToPush} months
+              <div className="space-y-4">
+                {goals.map(g => {
+                  const calc = calculateGoal(g);
+                  return (
+                    <div key={g.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors gap-4 relative">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-xl border border-gray-100 flex-shrink-0">
+                          {g.icon || '🎯'}
                         </div>
-                      )}
+                        <div>
+                          <h4 className="font-bold text-gray-900 text-lg">{g.name}</h4>
+                          <p className="text-sm text-gray-500 font-medium">In {g.years * 12} months ({g.inflationRate*100}% inflation) → {formatCurrency(calc.futureCost)}</p>
+                        </div>
+                      </div>
+                      <div className="text-left md:text-right md:pr-10">
+                        <div className="font-extrabold text-[#0F172A] text-lg">{formatCurrency(calc.monthlyRequired)} <span className="text-sm font-medium text-gray-400">/ mo</span></div>
+                        {calc.isAchievable ? (
+                          <div className="text-xs text-[#10B981] font-bold mt-1 bg-green-50 inline-block px-3 py-1 rounded-lg">Achievable</div>
+                        ) : (
+                          <div className="text-xs text-red-600 font-bold mt-1 bg-red-50 inline-block px-3 py-1 rounded-lg">
+                            Requires {formatCurrency(calc.monthlyRequired - (income*0.2))} more/mo or +{calc.monthsToPush} months
+                          </div>
+                        )}
+                      </div>
+                      <button onClick={() => {
+                        if(window.confirm(`Delete goal "${g.name}"?`)) removeGoal(g.id);
+                      }} className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
+                        <Trash2 className="w-5 h-5" />
+                      </button>
                     </div>
-                    <button onClick={() => {
-                      if(window.confirm(`Delete goal "${g.name}"?`)) removeGoal(g.id);
-                    }} className="absolute top-4 right-4 md:relative md:top-0 md:right-0 p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
-                      <Trash2 className="w-5 h-5" />
-                    </button>
-                  </div>
-                )
-              })}
-            </div>
+                  )
+                })}
+              </div>
             )}
           </section>
         )}

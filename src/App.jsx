@@ -13,7 +13,7 @@ const formatCurrency = (amount) => {
 };
 
 export default function App() {
-  const { hasOnboarded, income, getBudget, getSpent, goals, calculateGoal, addTransaction } = useStore();
+  const { hasOnboarded, income, getBudget, getSpent, goals, calculateGoal, addTransaction, transactions } = useStore();
   
   if (!hasOnboarded) {
     return <Onboarding />;
@@ -42,6 +42,10 @@ export default function App() {
         <button onClick={() => setActiveTab('dashboard')} className={btnClass('dashboard')}>
           <LayoutDashboard className={isMobile ? "w-6 h-6 mb-1" : "w-5 h-5"} />
           <span className={isMobile ? "text-[10px] font-medium" : ""}>Dashboard</span>
+        </button>
+        <button onClick={() => setActiveTab('cashflow')} className={btnClass('cashflow')}>
+          <Activity className={isMobile ? "w-6 h-6 mb-1" : "w-5 h-5"} />
+          <span className={isMobile ? "text-[10px] font-medium" : ""}>Cashflow</span>
         </button>
         <button onClick={() => setActiveTab('goals')} className={btnClass('goals')}>
           <Target className={isMobile ? "w-6 h-6 mb-1" : "w-5 h-5"} />
@@ -76,7 +80,9 @@ export default function App() {
       <main className="flex-1 px-4 md:px-12 py-8 overflow-y-auto">
         <header className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
           <div>
-            <h2 className="text-3xl font-semibold tracking-tight">{activeTab === 'dashboard' ? 'Overview' : 'SMART Goals'}</h2>
+            <h2 className="text-3xl font-semibold tracking-tight">
+              {activeTab === 'dashboard' ? 'Overview' : activeTab === 'goals' ? 'SMART Goals' : 'Cashflow'}
+            </h2>
           </div>
           <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg font-medium shadow-sm">
             <Plus className="w-4 h-4" /> Add Transaction
@@ -111,39 +117,67 @@ export default function App() {
           </div>
         )}
 
-        <section className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Active Goals</h3>
-            {activeTab === 'goals' && (
+        {activeTab === 'goals' && (
+          <section className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-lg font-semibold text-gray-900">Active Goals</h3>
               <button onClick={() => setShowAddGoal(true)} className="text-sm bg-indigo-50 text-indigo-700 px-3 py-1.5 rounded-lg font-medium hover:bg-indigo-100">
                 + New Goal
               </button>
-            )}
-          </div>
-          <div className="space-y-4">
-            {goals.map(g => {
-              const calc = calculateGoal(g);
-              return (
-                <div key={g.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 rounded-xl border border-gray-100 gap-4">
-                  <div>
-                    <h4 className="font-medium text-gray-900">{g.name}</h4>
-                    <p className="text-sm text-gray-500">In {g.years * 12} months (4% inflation) → {formatCurrency(calc.futureCost)}</p>
+            </div>
+            <div className="space-y-4">
+              {goals.map(g => {
+                const calc = calculateGoal(g);
+                return (
+                  <div key={g.id} className="flex flex-col md:flex-row md:items-center justify-between p-4 rounded-xl border border-gray-100 gap-4">
+                    <div>
+                      <h4 className="font-medium text-gray-900">{g.name}</h4>
+                      <p className="text-sm text-gray-500">In {g.years * 12} months (4% inflation) → {formatCurrency(calc.futureCost)}</p>
+                    </div>
+                    <div className="text-left md:text-right">
+                      <div className="font-medium text-gray-900">{formatCurrency(calc.monthlyRequired)} / mo</div>
+                      {calc.isAchievable ? (
+                        <div className="text-xs text-emerald-600 font-medium mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded">Achievable</div>
+                      ) : (
+                        <div className="text-xs text-red-600 font-medium mt-1 bg-red-50 inline-block px-2 py-0.5 rounded">
+                          Requires {formatCurrency(calc.monthlyRequired - (income*0.2))} more/mo or +{calc.monthsToPush} months
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-left md:text-right">
-                    <div className="font-medium text-gray-900">{formatCurrency(calc.monthlyRequired)} / mo</div>
-                    {calc.isAchievable ? (
-                      <div className="text-xs text-emerald-600 font-medium mt-1 bg-emerald-50 inline-block px-2 py-0.5 rounded">Achievable</div>
-                    ) : (
-                      <div className="text-xs text-red-600 font-medium mt-1 bg-red-50 inline-block px-2 py-0.5 rounded">
-                        Requires {formatCurrency(calc.monthlyRequired - (income*0.2))} more/mo or +{calc.monthsToPush} months
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {activeTab === 'cashflow' && (
+          <section className="bg-white border border-gray-100 rounded-2xl shadow-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-6">Recent Transactions</h3>
+            {transactions.length === 0 ? (
+              <p className="text-gray-500 text-center py-8">No transactions yet. Click 'Add Transaction' to start tracking.</p>
+            ) : (
+              <div className="space-y-3">
+                {transactions.slice().reverse().map(tx => (
+                  <div key={tx.id} className="flex items-center justify-between p-4 rounded-xl border border-gray-100">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${tx.category === 'needs' ? 'bg-emerald-100 text-emerald-600' : tx.category === 'wants' ? 'bg-amber-100 text-amber-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                        {tx.category === 'needs' ? <Home className="w-5 h-5" /> : tx.category === 'wants' ? <Coffee className="w-5 h-5" /> : <Target className="w-5 h-5" />}
                       </div>
-                    )}
+                      <div>
+                        <h4 className="font-medium text-gray-900 capitalize">{tx.desc}</h4>
+                        <p className="text-xs text-gray-500 uppercase tracking-wider mt-0.5">{tx.category}</p>
+                      </div>
+                    </div>
+                    <div className="font-medium text-gray-900">
+                      -{formatCurrency(tx.amount)}
+                    </div>
                   </div>
-                </div>
-              )
-            })}
-          </div>
-        </section>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </main>
 
       {showAddTx && (

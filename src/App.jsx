@@ -58,7 +58,7 @@ export default function App() {
   };
 
   const renderNav = (isMobile) => {
-    const btnClass = (tab) => `flex ${isMobile ? 'flex-col items-center flex-1' : 'items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-200'} ${activeTab === tab ? (isMobile ? 'text-spendee-green' : 'bg-spendee-green text-white shadow-md shadow-emerald-200/50') : (isMobile ? 'text-gray-400 hover:text-gray-600' : 'text-gray-500 hover:bg-gray-100 hover:text-gray-900')}`;
+    const btnClass = (tab) => `flex ${isMobile ? 'flex-col items-center flex-1' : 'items-center gap-3 px-4 py-3 rounded-xl font-bold transition-all duration-200'} ${activeTab === tab ? (isMobile ? 'text-spendee-green' : 'bg-spendee-light text-spendee-green') : (isMobile ? 'text-gray-400 hover:text-gray-600' : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900')}`;
     return (
       <>
         <button onClick={() => setActiveTab('dashboard')} className={btnClass('dashboard')}>
@@ -81,7 +81,7 @@ export default function App() {
     <div className="min-h-screen bg-spendee-light flex flex-col md:flex-row font-sans text-gray-900 pb-20 md:pb-0">
       <aside className="hidden md:flex flex-col w-72 bg-white border-r border-gray-100 px-6 py-8 shadow-sm z-10">
         <div className="flex items-center gap-3 mb-10 pl-2">
-          <div className="w-10 h-10 bg-spendee-dark rounded-xl flex items-center justify-center shadow-lg">
+          <div className="w-10 h-10 bg-spendee-green rounded-xl flex items-center justify-center shadow-lg shadow-emerald-200/50">
              <Target className="text-white w-6 h-6" />
           </div>
           <h1 className="text-2xl font-extrabold tracking-tight text-spendee-dark">FinTrack</h1>
@@ -110,7 +110,7 @@ export default function App() {
             </p>
           </div>
           {activeTab !== 'goals' && (
-            <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-spendee-green hover:bg-[#15B065] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-emerald-200/50 transition-transform active:scale-95">
+            <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-spendee-dark hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-gray-200 transition-transform active:scale-95">
               <Plus className="w-5 h-5" /> Add Transaction
             </button>
           )}
@@ -129,12 +129,12 @@ export default function App() {
               const pct = Math.min((used / limit) * 100, 100) || 0;
               
               return (
-                <div key={cat.id} className="bg-white p-7 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+                <div key={cat.id} className="bg-white p-7 rounded-[2rem] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] flex flex-col justify-between hover:shadow-[0_4px_20px_rgba(0,0,0,0.04)] transition-all">
                   <div className="flex justify-between items-start mb-6">
                     <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                      cat.id === 'needs' ? 'bg-blue-100 text-blue-500' :
-                      cat.id === 'wants' ? 'bg-amber-100 text-amber-500' :
-                      'bg-emerald-100 text-spendee-green'
+                      cat.id === 'needs' ? 'bg-[#EEF2FF] text-[#4F46E5]' :
+                      cat.id === 'wants' ? 'bg-[#FFFBEB] text-[#D97706]' :
+                      'bg-[#ECFDF5] text-[#059669]'
                     }`}>
                       <Icon className="w-6 h-6" />
                     </div>
@@ -144,10 +144,10 @@ export default function App() {
                   <div className="text-3xl font-extrabold text-spendee-dark">{formatCurrency(limit - used)}</div>
                   <div className="text-sm font-medium text-gray-500 mt-1">left to spend</div>
                   
-                    <div className="mt-6 w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-                      <div className={`${cat.bg} h-2 rounded-full transition-all duration-500 ease-out`} style={{ width: `${pct}%` }}></div>
-                    </div>
-                  <p className="text-sm font-medium text-gray-400 mt-3">{pct.toFixed(0)}% spent of {formatCurrency(limit)}</p>
+                  <div className="mt-8 w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+                    <div className={`${cat.id === 'needs' ? 'bg-[#4F46E5]' : cat.id === 'wants' ? 'bg-[#F59E0B]' : 'bg-[#10B981]'} h-2 rounded-full transition-all duration-500 ease-out`} style={{ width: `${pct}%` }}></div>
+                  </div>
+                  <p className="text-sm font-semibold text-gray-400 mt-4">{pct.toFixed(0)}% spent of {formatCurrency(limit)}</p>
                 </div>
               );
             })}
@@ -155,10 +155,10 @@ export default function App() {
         )}
 
         {activeTab === 'goals' && (
-          <section className="bg-white border border-gray-100 rounded-3xl shadow-sm p-8">
+          <section className="bg-white border border-gray-100 rounded-[2rem] shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8">
             <div className="flex justify-between items-center mb-8">
-              <h3 className="text-xl font-bold text-spendee-dark">Active Goals</h3>
-              <button onClick={() => setShowAddGoal(true)} className="text-sm bg-spendee-light text-spendee-dark px-4 py-2 rounded-xl font-semibold hover:bg-gray-200 transition-colors">
+              <h3 className="text-xl font-extrabold text-spendee-dark">Active Goals</h3>
+              <button onClick={() => setShowAddGoal(true)} className="text-sm bg-spendee-light text-spendee-dark px-4 py-2 rounded-xl font-bold hover:bg-gray-200 transition-colors">
                 + New Goal
               </button>
             </div>
@@ -194,16 +194,20 @@ export default function App() {
         )}
 
         {activeTab === 'cashflow' && (
-          <section className="bg-white border border-gray-100 rounded-3xl shadow-sm p-8">
-            <h3 className="text-xl font-bold text-spendee-dark mb-6">Recent Transactions</h3>
+          <section className="bg-white border border-gray-100 rounded-[2rem] shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8">
+            <h3 className="text-xl font-extrabold text-spendee-dark mb-8">Recent Transactions</h3>
             {transactions.length === 0 ? (
               <p className="text-gray-400 font-medium text-center py-12">No transactions yet. Click 'Add Transaction' to start tracking.</p>
             ) : (
               <div className="space-y-4">
                 {transactions.slice().reverse().map(tx => (
-                  <div key={tx.id} className="flex items-center justify-between p-4 rounded-2xl border border-gray-50 hover:bg-gray-50 transition-colors">
+                  <div key={tx.id} className="flex items-center justify-between p-4 rounded-2xl border border-gray-100 hover:border-gray-200 hover:shadow-sm bg-white transition-all">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${tx.category === 'needs' ? 'bg-blue-100 text-blue-600' : tx.category === 'wants' ? 'bg-amber-100 text-amber-600' : 'bg-spendee-green bg-opacity-20 text-spendee-green'}`}>
+                      <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                        tx.category === 'needs' ? 'bg-[#EEF2FF] text-[#4F46E5]' : 
+                        tx.category === 'wants' ? 'bg-[#FFFBEB] text-[#D97706]' : 
+                        'bg-[#ECFDF5] text-[#059669]'
+                      }`}>
                         {tx.category === 'needs' ? <Home className="w-6 h-6" /> : tx.category === 'wants' ? <Coffee className="w-6 h-6" /> : <Target className="w-6 h-6" />}
                       </div>
                       <div>

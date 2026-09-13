@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2, Search, Filter } from 'lucide-react';
+import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2, Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useStore } from './store';
 import AddGoalModal from './AddGoalModal';
 import Onboarding from './Onboarding';
@@ -42,8 +42,38 @@ export default function App() {
     return <Onboarding />;
   }
 
+  // Monthly Filter State
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+
+  // Helper to change month
+  const changeMonth = (offset) => {
+    setCurrentDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setMonth(prev.getMonth() + offset);
+      return newDate;
+    });
+  };
+
+  // Format month year for display
+  const monthDisplay = currentDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+
+  // Filter transactions for current month
+  const currentMonthTransactions = transactions.filter(tx => {
+    if (!tx.date) return true; // Include old transactions without dates in current view
+    const txDate = new Date(tx.date);
+    return txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear;
+  });
+
+  // Calculate spent based ONLY on current month's transactions
+  const spent = currentMonthTransactions.reduce((acc, tx) => {
+    acc[tx.category] = (acc[tx.category] || 0) + tx.amount;
+    return acc;
+  }, { needs: 0, wants: 0, goals: 0 });
+
   const budget = getBudget();
-  const spent = getSpent();
   const [showAddTx, setShowAddTx] = useState(false);
   const [showAddGoal, setShowAddGoal] = useState(false);
 
@@ -55,7 +85,7 @@ export default function App() {
   const [filterCategory, setFilterCategory] = useState('all');
   const [selectedTx, setSelectedTx] = useState(null);
 
-  const filteredTransactions = transactions.filter(tx => {
+  const filteredTransactions = currentMonthTransactions.filter(tx => {
     const matchesSearch = tx.desc.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === 'all' || tx.category === filterCategory;
     return matchesSearch && matchesCategory;
@@ -132,11 +162,26 @@ export default function App() {
               {activeTab === 'dashboard' ? 'Track your 50/30/20 budget limits.' : activeTab === 'goals' ? 'Inflation-adjusted financial targets.' : activeTab === 'cashflow' ? 'Your recent transactions.' : 'Manage your preferences.'}
             </p>
           </div>
-          {activeTab !== 'goals' && activeTab !== 'settings' && (
-            <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-[#0F172A] hover:bg-gray-800 text-white px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-gray-200 transition-transform active:scale-95">
-              <Plus className="w-5 h-5" /> Add Transaction
-            </button>
-          )}
+          
+          <div className="flex flex-col md:flex-row gap-4">
+            {(activeTab === 'dashboard' || activeTab === 'cashflow') && (
+              <div className="flex items-center bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+                <button onClick={() => changeMonth(-1)} className="p-2 text-gray-400 hover:text-[#0F172A] hover:bg-gray-50 rounded-lg transition-colors">
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <span className="px-4 font-bold text-sm text-[#0F172A] w-36 text-center">{monthDisplay}</span>
+                <button onClick={() => changeMonth(1)} className="p-2 text-gray-400 hover:text-[#0F172A] hover:bg-gray-50 rounded-lg transition-colors">
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
+            
+            {activeTab !== 'goals' && activeTab !== 'settings' && (
+              <button onClick={() => setShowAddTx(true)} className="flex items-center justify-center gap-2 bg-[#0F172A] hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-gray-200 transition-transform active:scale-95 h-[46px]">
+                <Plus className="w-5 h-5" /> Add Transaction
+              </button>
+            )}
+          </div>
         </header>
 
         {activeTab === 'dashboard' && (
@@ -308,7 +353,7 @@ export default function App() {
                 </div>
                 <h4 className="font-bold text-gray-900 text-xl mb-2">Clean slate</h4>
                 <p className="text-gray-500 font-medium text-base max-w-sm mx-auto">
-                  {transactions.length === 0 ? "You haven't spent any money yet. Click the Add Transaction button to log your first expense." : "No transactions match your search."}
+                  {currentMonthTransactions.length === 0 ? `You haven't spent any money in ${monthDisplay}. Click the Add Transaction button to log your first expense.` : "No transactions match your search."}
                 </p>
               </div>
             ) : (

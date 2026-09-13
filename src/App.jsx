@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut } from 'lucide-react';
 import { useStore } from './store';
 import AddGoalModal from './AddGoalModal';
@@ -15,13 +15,35 @@ const formatCurrency = (amount) => {
 export default function App() {
   const { hasOnboarded, income, getBudget, getSpent, goals, calculateGoal, addTransaction, transactions } = useStore();
   
+  // Initialize from hash or default to dashboard
+  const [activeTab, setActiveTab] = useState(() => {
+    const hash = window.location.hash.replace('#', '');
+    return ['dashboard', 'cashflow', 'goals'].includes(hash) ? hash : 'dashboard';
+  });
+
+  // Sync state to URL hash
+  useEffect(() => {
+    window.location.hash = activeTab;
+  }, [activeTab]);
+
+  // Sync URL hash changes (back/forward buttons) to state
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (['dashboard', 'cashflow', 'goals'].includes(hash)) {
+        setActiveTab(hash);
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   if (!hasOnboarded) {
     return <Onboarding />;
   }
 
   const budget = getBudget();
   const spent = getSpent();
-  const [activeTab, setActiveTab] = useState('dashboard');
   const [showAddTx, setShowAddTx] = useState(false);
   const [showAddGoal, setShowAddGoal] = useState(false);
 

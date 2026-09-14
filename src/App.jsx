@@ -79,6 +79,9 @@ export default function App() {
   const budget = getBudget();
   const [showAddTx, setShowAddTx] = useState(false);
   const [showAddGoal, setShowAddGoal] = useState(false);
+  
+  // Custom Delete Confirm Modal State
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, type: null, id: null, title: '' });
 
   const [txForm, setTxForm] = useState({ amount: '', category: 'needs', desc: '' });
   const [incomeForm, setIncomeForm] = useState(income.toString());
@@ -363,7 +366,7 @@ export default function App() {
                         )}
                       </div>
                       <button onClick={() => {
-                        if(window.confirm(`Delete goal "${g.name}"?`)) removeGoal(g.id);
+                        setDeleteConfirm({ isOpen: true, type: 'goal', id: g.id, title: g.name });
                       }} className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
                         <Trash2 className="w-5 h-5" />
                       </button>
@@ -450,7 +453,7 @@ export default function App() {
                       </div>
                       <button onClick={(e) => {
                         e.stopPropagation();
-                        if(window.confirm(`Delete transaction "${tx.desc}"?`)) removeTransaction(tx.id);
+                        setDeleteConfirm({ isOpen: true, type: 'transaction', id: tx.id, title: tx.desc });
                       }} className="p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50" title="Delete transaction">
                         <Trash2 className="w-5 h-5" />
                       </button>
@@ -579,10 +582,8 @@ export default function App() {
                 {selectedTx.category === 'needs' ? <Home className="w-8 h-8" /> : selectedTx.category === 'wants' ? <Coffee className="w-8 h-8" /> : <Target className="w-8 h-8" />}
               </div>
               <button onClick={() => {
-                if(window.confirm(`Delete transaction "${selectedTx.desc}"?`)) {
-                  removeTransaction(selectedTx.id);
-                  setSelectedTx(null);
-                }
+                setDeleteConfirm({ isOpen: true, type: 'transaction', id: selectedTx.id, title: selectedTx.desc });
+                setSelectedTx(null);
               }} className="p-3 text-red-500 bg-red-50 hover:bg-red-100 transition-colors rounded-xl flex items-center gap-2 font-bold text-sm">
                 <Trash2 className="w-4 h-4" /> Delete
               </button>
@@ -615,6 +616,38 @@ export default function App() {
             <button onClick={() => setSelectedTx(null)} className="w-full py-4 font-bold bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors">
               Close Details
             </button>
+          </div>
+        </div>
+      )}
+
+      {deleteConfirm.isOpen && (
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-[60] transition-all">
+          <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl border border-gray-100 text-center">
+            <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Trash2 className="w-8 h-8 text-red-500" />
+            </div>
+            <h3 className="text-xl font-extrabold text-[#0F172A] mb-2">Delete {deleteConfirm.type === 'goal' ? 'Goal' : 'Transaction'}?</h3>
+            <p className="text-gray-500 font-medium mb-8">
+              Are you sure you want to delete <strong className="text-gray-700">"{deleteConfirm.title}"</strong>? This action cannot be undone.
+            </p>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => setDeleteConfirm({ isOpen: false, type: null, id: null, title: '' })} 
+                className="flex-1 px-5 py-3.5 font-bold text-gray-500 hover:bg-gray-100 rounded-xl transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  if (deleteConfirm.type === 'goal') removeGoal(deleteConfirm.id);
+                  if (deleteConfirm.type === 'transaction') removeTransaction(deleteConfirm.id);
+                  setDeleteConfirm({ isOpen: false, type: null, id: null, title: '' });
+                }} 
+                className="flex-1 px-5 py-3.5 font-bold bg-red-500 text-white rounded-xl hover:bg-red-600 transition-all shadow-lg shadow-red-200 active:scale-95"
+              >
+                Yes, Delete
+              </button>
+            </div>
           </div>
         </div>
       )}

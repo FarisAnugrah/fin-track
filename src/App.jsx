@@ -427,9 +427,19 @@ export default function App() {
                   const totalAllowed = income * 0.2;
                   if (totalRequiredAllGoals > totalAllowed) {
                     return (
-                      <div className="bg-red-50 border border-red-100 p-4 rounded-2xl mb-6">
-                        <h4 className="text-red-800 font-bold mb-1">Warning: Goal Conflict ⚠️</h4>
-                        <p className="text-red-600 text-sm font-medium">Your combined goals require <strong>{formatCurrency(totalRequiredAllGoals)}/mo</strong>, but your 20% budget only allows <strong>{formatCurrency(totalAllowed)}/mo</strong>. Some goals may not be achievable simultaneously.</p>
+                      <div className="bg-red-50 border-2 border-red-100 p-6 rounded-[1.5rem] mb-8 flex flex-col md:flex-row gap-5 items-start">
+                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm border border-red-100">
+                          <span className="text-2xl">⚠️</span>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-red-800 font-extrabold text-lg tracking-tight mb-1">Goal Budget Exceeded</h4>
+                          <p className="text-red-600 text-sm font-medium leading-relaxed">
+                            Your combined goals require <strong className="text-red-800 font-black">{formatCurrency(totalRequiredAllGoals)}/mo</strong>, but your 20% limit only allows <strong className="text-red-800 font-black">{formatCurrency(totalAllowed)}/mo</strong>. 
+                          </p>
+                          <div className="mt-4 inline-flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg border border-red-100 shadow-sm text-xs font-bold text-red-700">
+                            Shortfall: {formatCurrency(totalRequiredAllGoals - totalAllowed)}/mo
+                          </div>
+                        </div>
                       </div>
                     );
                   }

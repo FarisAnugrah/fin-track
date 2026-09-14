@@ -16,6 +16,9 @@ export const useStore = create(
       removeTransaction: (id) => set((state) => ({
         transactions: state.transactions.filter(t => t.id !== id)
       })),
+      removeMultipleTransactions: (ids) => set((state) => ({
+        transactions: state.transactions.filter(t => !ids.includes(t.id))
+      })),
 
       goals: [
         {

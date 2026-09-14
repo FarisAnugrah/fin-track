@@ -47,7 +47,7 @@ const formatCurrency = (amount) => {
 };
 
 export default function App() {
-  const { hasOnboarded, income, setIncome, getBudget, getSpent, goals, calculateGoal, addTransaction, transactions, removeTransaction, removeGoal } = useStore();
+  const { hasOnboarded, income, setIncome, getBudget, getSpent, goals, calculateGoal, addTransaction, transactions, removeTransaction, removeMultipleTransactions, removeGoal } = useStore();
   
   // Initialize from hash or default to dashboard
   const [activeTab, setActiveTab] = useState(() => {
@@ -127,6 +127,8 @@ export default function App() {
   const [selectedTx, setSelectedTx] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 5;
+  const [selectedForBulk, setSelectedForBulk] = useState([]);
+  const [isBulkMode, setIsBulkMode] = useState(false);
 
   const filteredTransactions = currentMonthTransactions.filter(tx => {
     const matchesSearch = tx.desc.toLowerCase().includes(searchTerm.toLowerCase());
@@ -479,6 +481,15 @@ export default function App() {
               <h3 className="text-xl font-extrabold text-[#0F172A]">Recent Transactions</h3>
               
               <div className="flex items-center gap-3 w-full md:w-auto">
+                <button 
+                  onClick={() => {
+                    setIsBulkMode(!isBulkMode);
+                    setSelectedForBulk([]);
+                  }}
+                  className={`px-4 py-2 rounded-xl font-bold text-sm transition-colors flex-shrink-0 ${isBulkMode ? 'bg-[#0F172A] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
+                >
+                  {isBulkMode ? 'Cancel Selection' : 'Select'}
+                </button>
                 <div className="relative flex-1 md:w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input 
@@ -517,9 +528,39 @@ export default function App() {
               </div>
             ) : (
               <div className="space-y-4">
-                {paginatedTransactions.map(tx => (
-                  <div key={tx.id} onClick={() => setSelectedTx(tx)} className="flex items-center justify-between p-5 rounded-[1.5rem] border-2 border-gray-100 hover:border-gray-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] bg-white transition-all hover:-translate-y-0.5 cursor-pointer">
+                {isBulkMode && selectedForBulk.length > 0 && (
+                  <div className="bg-red-50 p-4 rounded-xl flex items-center justify-between border border-red-100 mb-4 animate-in fade-in zoom-in duration-200">
+                    <span className="font-bold text-red-800">{selectedForBulk.length} selected</span>
+                    <button 
+                      onClick={() => {
+                        if(window.confirm(`Delete ${selectedForBulk.length} selected transactions?`)) {
+                          removeMultipleTransactions(selectedForBulk);
+                          setSelectedForBulk([]);
+                          setIsBulkMode(false);
+                        }
+                      }}
+                      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md transition-colors"
+                    >
+                      Delete Selected
+                    </button>
+                  </div>
+                )}
+                {paginatedTransactions.map(tx => {
+                  const isSelected = selectedForBulk.includes(tx.id);
+                  return (
+                  <div key={tx.id} onClick={() => {
+                    if (isBulkMode) {
+                      setSelectedForBulk(prev => prev.includes(tx.id) ? prev.filter(id => id !== tx.id) : [...prev, tx.id]);
+                    } else {
+                      setSelectedTx(tx);
+                    }
+                  }} className={`flex items-center justify-between p-5 rounded-[1.5rem] border-2 transition-all cursor-pointer ${isSelected ? 'border-[#10B981] bg-green-50/30' : 'border-gray-100 hover:border-gray-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] bg-white hover:-translate-y-0.5'}`}>
                     <div className="flex items-center gap-4">
+                      {isBulkMode && (
+                        <div className={`w-6 h-6 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? 'bg-[#10B981] border-[#10B981]' : 'border-gray-300 bg-white'}`}>
+                          {isSelected && <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                        </div>
+                      )}
                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0 ${
                         tx.category === 'needs' ? 'bg-[#EFF6FF] text-[#2563EB] border border-[#BFDBFE]' : 
                         tx.category === 'wants' ? 'bg-[#FFFBEB] text-[#D97706] border border-[#FDE68A]' : 
@@ -556,15 +597,17 @@ export default function App() {
                       <div className="font-black text-[#0F172A] text-xl">
                         {formatCurrency(tx.amount)}
                       </div>
-                      <button onClick={(e) => {
-                        e.stopPropagation();
-                        setDeleteConfirm({ isOpen: true, type: 'transaction', id: tx.id, title: tx.desc });
-                      }} className="p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50" title="Delete transaction">
-                        <Trash2 className="w-5 h-5" />
-                      </button>
+                      {!isBulkMode && (
+                        <button onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteConfirm({ isOpen: true, type: 'transaction', id: tx.id, title: tx.desc });
+                        }} className="p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50" title="Delete transaction">
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      )}
                     </div>
                   </div>
-                ))}
+                )})}
 
                 {/* Pagination Controls */}
                 {totalPages > 0 && (

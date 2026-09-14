@@ -87,12 +87,26 @@ export default function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [selectedTx, setSelectedTx] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 5;
 
   const filteredTransactions = currentMonthTransactions.filter(tx => {
     const matchesSearch = tx.desc.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === 'all' || tx.category === filterCategory;
     return matchesSearch && matchesCategory;
   });
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredTransactions.length / ITEMS_PER_PAGE);
+  const paginatedTransactions = filteredTransactions
+    .slice()
+    .reverse()
+    .slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+  // Reset page when filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, filterCategory, currentDate]);
 
   const handleAddTx = (e) => {
     e.preventDefault();
@@ -405,7 +419,7 @@ export default function App() {
               </div>
             ) : (
               <div className="space-y-4">
-                {filteredTransactions.slice().reverse().map(tx => (
+                {paginatedTransactions.map(tx => (
                   <div key={tx.id} onClick={() => setSelectedTx(tx)} className="flex items-center justify-between p-5 rounded-[1.5rem] border-2 border-gray-100 hover:border-gray-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] bg-white transition-all hover:-translate-y-0.5 cursor-pointer">
                     <div className="flex items-center gap-4">
                       <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-sm flex-shrink-0 ${
@@ -437,6 +451,31 @@ export default function App() {
                     </div>
                   </div>
                 ))}
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-between pt-6 border-t border-gray-100 mt-6">
+                    <p className="text-sm font-bold text-gray-400">
+                      Showing <span className="text-gray-700">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to <span className="text-gray-700">{Math.min(currentPage * ITEMS_PER_PAGE, filteredTransactions.length)}</span> of <span className="text-gray-700">{filteredTransactions.length}</span>
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                        disabled={currentPage === 1}
+                        className="p-2 border-2 border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
+                      >
+                        <ChevronLeft className="w-5 h-5" />
+                      </button>
+                      <button 
+                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                        disabled={currentPage === totalPages}
+                        className="p-2 border-2 border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
+                      >
+                        <ChevronRight className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </section>

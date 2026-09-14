@@ -453,27 +453,30 @@ export default function App() {
                 ))}
 
                 {/* Pagination Controls */}
-                {totalPages > 1 && (
-                  <div className="flex items-center justify-between pt-6 border-t border-gray-100 mt-6">
+                {totalPages > 0 && (
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-100 mt-6">
                     <p className="text-sm font-bold text-gray-400">
-                      Showing <span className="text-gray-700">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to <span className="text-gray-700">{Math.min(currentPage * ITEMS_PER_PAGE, filteredTransactions.length)}</span> of <span className="text-gray-700">{filteredTransactions.length}</span>
+                      Showing <span className="text-[#0F172A]">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span> to <span className="text-[#0F172A]">{Math.min(currentPage * ITEMS_PER_PAGE, filteredTransactions.length)}</span> of <span className="text-[#0F172A]">{filteredTransactions.length}</span> entries
                     </p>
-                    <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                        disabled={currentPage === 1}
-                        className="p-2 border-2 border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
-                      >
-                        <ChevronLeft className="w-5 h-5" />
-                      </button>
-                      <button 
-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                        disabled={currentPage === totalPages}
-                        className="p-2 border-2 border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-gray-600"
-                      >
-                        <ChevronRight className="w-5 h-5" />
-                      </button>
-                    </div>
+                    {totalPages > 1 && (
+                      <div className="flex items-center gap-2">
+                        <button 
+                          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                          disabled={currentPage === 1}
+                          className="p-2 border-2 border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[#0F172A]"
+                        >
+                          <ChevronLeft className="w-5 h-5" />
+                        </button>
+                        <span className="font-bold text-sm px-2 text-[#0F172A]">Page {currentPage} of {totalPages}</span>
+                        <button 
+                          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                          disabled={currentPage === totalPages}
+                          className="p-2 border-2 border-gray-100 rounded-xl hover:bg-gray-50 hover:border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-[#0F172A]"
+                        >
+                          <ChevronRight className="w-5 h-5" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

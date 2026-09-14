@@ -316,6 +316,16 @@ export default function App() {
                     <span className="text-sm font-bold text-gray-600">Goals</span>
                   </div>
                 </div>
+                <div className="mt-8 pt-6 border-t border-gray-100 flex gap-6">
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-gray-400 mb-1">Total Remaining</p>
+                    <p className="text-xl font-black text-[#10B981]">{formatCurrency(income - (currentSpent.needs + currentSpent.wants + currentSpent.goals))}</p>
+                  </div>
+                  <div className="flex-1 border-l border-gray-100 pl-6">
+                    <p className="text-sm font-bold text-gray-400 mb-1">Total Transactions</p>
+                    <p className="text-xl font-black text-[#0F172A]">{currentMonthTransactions.length}</p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -480,8 +490,18 @@ export default function App() {
                             </>
                           )}
                         </div>
-                      </div>
-                    </div>
+                <div className="mt-8 pt-6 border-t border-gray-100 flex gap-6">
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-gray-400 mb-1">Total Remaining</p>
+                    <p className="text-xl font-black text-[#10B981]">{formatCurrency(income - (currentSpent.needs + currentSpent.wants + currentSpent.goals))}</p>
+                  </div>
+                  <div className="flex-1 border-l border-gray-100 pl-6">
+                    <p className="text-sm font-bold text-gray-400 mb-1">Total Transactions</p>
+                    <p className="text-xl font-black text-[#0F172A]">{currentMonthTransactions.length}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
                     <div className="flex items-center gap-4">
                       <div className="font-black text-[#0F172A] text-xl">
                         {formatCurrency(tx.amount)}

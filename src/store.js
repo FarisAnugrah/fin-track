@@ -12,25 +12,25 @@ export const useStore = create(
   persist(
     (set, get) => ({
       hasOnboarded: true, // Auto-onboard for dummy data
-      income: 18000000,
+      income: 4500000, // Typical student allowance/part-time income
       setIncome: (income) => set({ income, hasOnboarded: true }),
       
       transactions: [
-        // Needs
-        { id: 't1', amount: 3500000, category: 'needs', desc: 'Apartment Rent', date: getRealisticDate(12) },
-        { id: 't2', amount: 850000, category: 'needs', desc: 'Electricity & Water Bill', date: getRealisticDate(10) },
-        { id: 't3', amount: 1200000, category: 'needs', desc: 'Monthly Groceries', date: getRealisticDate(8) },
-        { id: 't4', amount: 350000, category: 'needs', desc: 'Internet Subscription', date: getRealisticDate(7) },
-        { id: 't5', amount: 450000, category: 'needs', desc: 'Gasoline & Transport', date: getRealisticDate(5) },
-        // Wants
-        { id: 't6', amount: 250000, category: 'wants', desc: 'Netflix & Spotify', date: getRealisticDate(15) },
-        { id: 't7', amount: 650000, category: 'wants', desc: 'Weekend Dinner Out', date: getRealisticDate(11) },
-        { id: 't8', amount: 320000, category: 'wants', desc: 'Coffee Shop Sessions', date: getRealisticDate(9) },
-        { id: 't9', amount: 850000, category: 'wants', desc: 'New Sneakers', date: getRealisticDate(4) },
-        { id: 't10', amount: 150000, category: 'wants', desc: 'Cinema Tickets', date: getRealisticDate(2) },
-        // Goals 
-        { id: 't11', amount: 1500000, category: 'goals', desc: 'Transfer to Emergency Fund', date: getRealisticDate(14) },
-        { id: 't12', amount: 850000, category: 'goals', desc: 'S&P 500 Index Fund', date: getRealisticDate(3) }
+        // Needs (Kos essentials)
+        { id: 't1', amount: 1500000, category: 'needs', desc: 'Kos Rent (Monthly)', date: getRealisticDate(12) },
+        { id: 't2', amount: 150000, category: 'needs', desc: 'Kos Electricity Token', date: getRealisticDate(10) },
+        { id: 't3', amount: 350000, category: 'needs', desc: 'Indomaret Groceries & Water', date: getRealisticDate(8) },
+        { id: 't4', amount: 120000, category: 'needs', desc: 'Cellular Data Package', date: getRealisticDate(7) },
+        { id: 't5', amount: 200000, category: 'needs', desc: 'Gojek to Campus', date: getRealisticDate(5) },
+        // Wants (Student lifestyle)
+        { id: 't6', amount: 55000, category: 'wants', desc: 'Spotify Student Plan', date: getRealisticDate(15) },
+        { id: 't7', amount: 125000, category: 'wants', desc: 'Mixue & Seblak with friends', date: getRealisticDate(11) },
+        { id: 't8', amount: 180000, category: 'wants', desc: 'Nugas at Coffee Shop', date: getRealisticDate(9) },
+        { id: 't9', amount: 250000, category: 'wants', desc: 'Thrifting at Pasar Senen', date: getRealisticDate(4) },
+        { id: 't10', amount: 85000, category: 'wants', desc: 'Valorant Points', date: getRealisticDate(2) },
+        // Goals (Savings)
+        { id: 't11', amount: 250000, category: 'goals', desc: 'Emergency Fund Transfer', date: getRealisticDate(14) },
+        { id: 't12', amount: 150000, category: 'goals', desc: 'Laptop Upgrade Savings', date: getRealisticDate(3) }
       ],
       addTransaction: (tx) => set((state) => ({ 
         // If tx already has a date from the UI (like historical input), use it, otherwise fallback to now
@@ -46,27 +46,27 @@ export const useStore = create(
       goals: [
         {
           id: 'g1',
-          name: 'Dream Wedding',
-          currentCost: 150000000,
-          years: 3,
+          name: 'Emergency Fund',
+          currentCost: 10000000,
+          years: 1,
           inflationRate: 0.04,
-          icon: 'heart'
+          icon: 'savings'
         },
         {
           id: 'g2',
-          name: 'First Car (Used)',
-          currentCost: 85000000,
+          name: 'First Vehicle (Used Bike)',
+          currentCost: 15000000,
           years: 2,
           inflationRate: 0.02,
-          icon: 'car'
+          icon: 'bike'
         },
         {
           id: 'g3',
-          name: 'Japan Trip 2027',
-          currentCost: 25000000,
+          name: 'Thesis Laptop Upgrade',
+          currentCost: 12000000,
           years: 1.5,
           inflationRate: 0.04,
-          icon: 'plane'
+          icon: 'laptop'
         }
       ],
       addGoal: (goal) => set((state) => ({

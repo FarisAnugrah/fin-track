@@ -530,7 +530,21 @@ export default function App() {
               <div className="space-y-4">
                 {isBulkMode && selectedForBulk.length > 0 && (
                   <div className="bg-red-50 p-4 rounded-xl flex items-center justify-between border border-red-100 mb-4 animate-in fade-in zoom-in duration-200">
-                    <span className="font-bold text-red-800">{selectedForBulk.length} selected</span>
+                    <div className="flex items-center gap-4">
+                      <span className="font-bold text-red-800">{selectedForBulk.length} selected</span>
+                      <button 
+                        onClick={() => {
+                          if (selectedForBulk.length === filteredTransactions.length) {
+                            setSelectedForBulk([]);
+                          } else {
+                            setSelectedForBulk(filteredTransactions.map(t => t.id));
+                          }
+                        }}
+                        className="text-sm font-bold text-red-600 hover:text-red-800 underline decoration-red-200 transition-colors"
+                      >
+                        {selectedForBulk.length === filteredTransactions.length ? 'Deselect All' : 'Select All'}
+                      </button>
+                    </div>
                     <button 
                       onClick={() => {
                         if(window.confirm(`Delete ${selectedForBulk.length} selected transactions?`)) {

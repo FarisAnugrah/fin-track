@@ -287,13 +287,16 @@ export default function App() {
           <>
             <div className="bg-white rounded-[2rem] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 mb-10 flex flex-col md:flex-row items-center gap-10">
               <div className="relative w-48 h-48 flex-shrink-0">
-                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
+                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 overflow-visible">
                   <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" strokeWidth="12" />
                   <circle 
                     cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="12" 
                     strokeDasharray={`${Math.min((currentSpent.needs / income) * 251.2, 251.2)} 251.2`}
-                    className="transition-all duration-300 hover:stroke-[15px] cursor-pointer"
-                    onMouseEnter={(e) => setChartTooltip({ visible: true, title: 'Needs', amount: formatCurrency(currentSpent.needs), x: e.clientX, y: e.clientY, color: '#3B82F6' })}
+                    className="transition-all duration-300 hover:stroke-[16px] cursor-pointer outline-none"
+                    onMouseEnter={(e) => {
+                      const rect = e.target.getBoundingClientRect();
+                      setChartTooltip({ visible: true, title: 'Needs', amount: formatCurrency(currentSpent.needs), x: e.clientX, y: e.clientY, color: '#3B82F6' });
+                    }}
                     onMouseMove={(e) => setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
                     onMouseLeave={() => setChartTooltip({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' })}
                   />
@@ -301,7 +304,7 @@ export default function App() {
                     cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="12" 
                     strokeDasharray={`${Math.min((currentSpent.wants / income) * 251.2, 251.2)} 251.2`} 
                     strokeDashoffset={-(currentSpent.needs / income) * 251.2}
-                    className="transition-all duration-300 hover:stroke-[15px] cursor-pointer"
+                    className="transition-all duration-300 hover:stroke-[16px] cursor-pointer outline-none"
                     onMouseEnter={(e) => setChartTooltip({ visible: true, title: 'Wants', amount: formatCurrency(currentSpent.wants), x: e.clientX, y: e.clientY, color: '#F59E0B' })}
                     onMouseMove={(e) => setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
                     onMouseLeave={() => setChartTooltip({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' })}
@@ -310,13 +313,13 @@ export default function App() {
                     cx="50" cy="50" r="40" fill="transparent" stroke="#D946EF" strokeWidth="12" 
                     strokeDasharray={`${Math.min((currentSpent.goals / income) * 251.2, 251.2)} 251.2`} 
                     strokeDashoffset={-((currentSpent.needs + currentSpent.wants) / income) * 251.2}
-                    className="transition-all duration-300 hover:stroke-[15px] cursor-pointer"
+                    className="transition-all duration-300 hover:stroke-[16px] cursor-pointer outline-none"
                     onMouseEnter={(e) => setChartTooltip({ visible: true, title: 'Goals', amount: formatCurrency(currentSpent.goals), x: e.clientX, y: e.clientY, color: '#D946EF' })}
                     onMouseMove={(e) => setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
                     onMouseLeave={() => setChartTooltip({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' })}
                   />
                 </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
                   <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Total Spent</span>
                   <span className="text-xl font-black text-[#0F172A] mt-1">{formatCurrency(currentSpent.needs + currentSpent.wants + currentSpent.goals)}</span>
                 </div>

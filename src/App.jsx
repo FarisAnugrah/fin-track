@@ -287,8 +287,8 @@ export default function App() {
           <>
             <div className="bg-white rounded-[2rem] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 mb-10 flex flex-col md:flex-row items-center gap-10">
               <div className="relative w-48 h-48 flex-shrink-0">
-                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 overflow-visible relative z-10">
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" strokeWidth="12" />
+                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 overflow-visible relative z-10 pointer-events-auto">
+                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" strokeWidth="12" className="pointer-events-none" />
                   
                   {currentSpent.needs > 0 && (
                     <circle 

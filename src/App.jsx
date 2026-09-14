@@ -287,34 +287,41 @@ export default function App() {
           <>
             <div className="bg-white rounded-[2rem] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 mb-10 flex flex-col md:flex-row items-center gap-10">
               <div className="relative w-48 h-48 flex-shrink-0">
-                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 overflow-visible">
+                <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 overflow-visible relative z-10 pointer-events-none">
                   <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" strokeWidth="12" />
                   <circle 
-                    cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="12" 
+                    cx="50" cy="50" r="40" fill="transparent" stroke={currentSpent.needs > 0 ? "#3B82F6" : "transparent"} strokeWidth="12" 
                     strokeDasharray={`${Math.min((currentSpent.needs / income) * 251.2, 251.2)} 251.2`}
-                    className="transition-all duration-300 hover:stroke-[16px] cursor-pointer outline-none relative z-30"
+                    className={`transition-all duration-300 outline-none ${currentSpent.needs > 0 ? 'hover:stroke-[16px] cursor-pointer pointer-events-stroke' : 'pointer-events-none'}`}
                     onMouseEnter={(e) => {
+                      if (currentSpent.needs <= 0) return;
                       setChartTooltip({ visible: true, title: 'Needs', amount: formatCurrency(currentSpent.needs), x: e.clientX, y: e.clientY, color: '#3B82F6' });
                     }}
-                    onMouseMove={(e) => setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
+                    onMouseMove={(e) => currentSpent.needs > 0 && setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
                     onMouseLeave={() => setChartTooltip({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' })}
                   />
                   <circle 
-                    cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="12" 
+                    cx="50" cy="50" r="40" fill="transparent" stroke={currentSpent.wants > 0 ? "#F59E0B" : "transparent"} strokeWidth="12" 
                     strokeDasharray={`${Math.min((currentSpent.wants / income) * 251.2, 251.2)} 251.2`} 
                     strokeDashoffset={-(currentSpent.needs / income) * 251.2}
-                    className="transition-all duration-300 hover:stroke-[16px] cursor-pointer outline-none relative z-20"
-                    onMouseEnter={(e) => setChartTooltip({ visible: true, title: 'Wants', amount: formatCurrency(currentSpent.wants), x: e.clientX, y: e.clientY, color: '#F59E0B' })}
-                    onMouseMove={(e) => setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
+                    className={`transition-all duration-300 outline-none ${currentSpent.wants > 0 ? 'hover:stroke-[16px] cursor-pointer pointer-events-stroke' : 'pointer-events-none'}`}
+                    onMouseEnter={(e) => {
+                      if (currentSpent.wants <= 0) return;
+                      setChartTooltip({ visible: true, title: 'Wants', amount: formatCurrency(currentSpent.wants), x: e.clientX, y: e.clientY, color: '#F59E0B' });
+                    }}
+                    onMouseMove={(e) => currentSpent.wants > 0 && setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
                     onMouseLeave={() => setChartTooltip({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' })}
                   />
                   <circle 
-                    cx="50" cy="50" r="40" fill="transparent" stroke="#D946EF" strokeWidth="12" 
+                    cx="50" cy="50" r="40" fill="transparent" stroke={currentSpent.goals > 0 ? "#D946EF" : "transparent"} strokeWidth="12" 
                     strokeDasharray={`${Math.min((currentSpent.goals / income) * 251.2, 251.2)} 251.2`} 
                     strokeDashoffset={-((currentSpent.needs + currentSpent.wants) / income) * 251.2}
-                    className="transition-all duration-300 hover:stroke-[16px] cursor-pointer outline-none relative z-10"
-                    onMouseEnter={(e) => setChartTooltip({ visible: true, title: 'Goals', amount: formatCurrency(currentSpent.goals), x: e.clientX, y: e.clientY, color: '#D946EF' })}
-                    onMouseMove={(e) => setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
+                    className={`transition-all duration-300 outline-none ${currentSpent.goals > 0 ? 'hover:stroke-[16px] cursor-pointer pointer-events-stroke' : 'pointer-events-none'}`}
+                    onMouseEnter={(e) => {
+                      if (currentSpent.goals <= 0) return;
+                      setChartTooltip({ visible: true, title: 'Goals', amount: formatCurrency(currentSpent.goals), x: e.clientX, y: e.clientY, color: '#D946EF' });
+                    }}
+                    onMouseMove={(e) => currentSpent.goals > 0 && setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
                     onMouseLeave={() => setChartTooltip({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' })}
                   />
                 </svg>

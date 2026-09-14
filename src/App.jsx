@@ -120,7 +120,8 @@ export default function App() {
   const [txForm, setTxForm] = useState({ amount: '', category: 'needs', desc: '' });
   const [incomeForm, setIncomeForm] = useState(income.toString());
   
-  // Search & Filter State
+  // Tooltip State for Donut Chart
+  const [chartTooltip, setChartTooltip] = useState({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' });
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('all');
   const [selectedTx, setSelectedTx] = useState(null);
@@ -288,9 +289,32 @@ export default function App() {
               <div className="relative w-48 h-48 flex-shrink-0">
                 <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90">
                   <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" strokeWidth="12" />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="12" strokeDasharray={`${Math.min((currentSpent.needs / income) * 251.2, 251.2)} 251.2`} />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="12" strokeDasharray={`${Math.min((currentSpent.wants / income) * 251.2, 251.2)} 251.2`} strokeDashoffset={-(currentSpent.needs / income) * 251.2} />
-                  <circle cx="50" cy="50" r="40" fill="transparent" stroke="#D946EF" strokeWidth="12" strokeDasharray={`${Math.min((currentSpent.goals / income) * 251.2, 251.2)} 251.2`} strokeDashoffset={-((currentSpent.needs + currentSpent.wants) / income) * 251.2} />
+                  <circle 
+                    cx="50" cy="50" r="40" fill="transparent" stroke="#3B82F6" strokeWidth="12" 
+                    strokeDasharray={`${Math.min((currentSpent.needs / income) * 251.2, 251.2)} 251.2`}
+                    className="transition-all duration-300 hover:stroke-[15px] cursor-pointer"
+                    onMouseEnter={(e) => setChartTooltip({ visible: true, title: 'Needs', amount: formatCurrency(currentSpent.needs), x: e.clientX, y: e.clientY, color: '#3B82F6' })}
+                    onMouseMove={(e) => setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
+                    onMouseLeave={() => setChartTooltip({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' })}
+                  />
+                  <circle 
+                    cx="50" cy="50" r="40" fill="transparent" stroke="#F59E0B" strokeWidth="12" 
+                    strokeDasharray={`${Math.min((currentSpent.wants / income) * 251.2, 251.2)} 251.2`} 
+                    strokeDashoffset={-(currentSpent.needs / income) * 251.2}
+                    className="transition-all duration-300 hover:stroke-[15px] cursor-pointer"
+                    onMouseEnter={(e) => setChartTooltip({ visible: true, title: 'Wants', amount: formatCurrency(currentSpent.wants), x: e.clientX, y: e.clientY, color: '#F59E0B' })}
+                    onMouseMove={(e) => setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
+                    onMouseLeave={() => setChartTooltip({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' })}
+                  />
+                  <circle 
+                    cx="50" cy="50" r="40" fill="transparent" stroke="#D946EF" strokeWidth="12" 
+                    strokeDasharray={`${Math.min((currentSpent.goals / income) * 251.2, 251.2)} 251.2`} 
+                    strokeDashoffset={-((currentSpent.needs + currentSpent.wants) / income) * 251.2}
+                    className="transition-all duration-300 hover:stroke-[15px] cursor-pointer"
+                    onMouseEnter={(e) => setChartTooltip({ visible: true, title: 'Goals', amount: formatCurrency(currentSpent.goals), x: e.clientX, y: e.clientY, color: '#D946EF' })}
+                    onMouseMove={(e) => setChartTooltip(prev => ({ ...prev, x: e.clientX, y: e.clientY }))}
+                    onMouseLeave={() => setChartTooltip({ visible: false, title: '', amount: '', x: 0, y: 0, color: '' })}
+                  />
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-sm font-bold text-gray-400 uppercase tracking-wider">Total Spent</span>
@@ -586,6 +610,19 @@ export default function App() {
           </div>
         )}
       </main>
+
+      {chartTooltip.visible && (
+        <div 
+          className="fixed pointer-events-none z-[100] bg-[#0F172A] text-white px-4 py-3 rounded-2xl shadow-xl shadow-gray-200/50 transform -translate-x-1/2 -translate-y-[120%]"
+          style={{ left: chartTooltip.x, top: chartTooltip.y }}
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: chartTooltip.color }}></div>
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-300">{chartTooltip.title}</span>
+          </div>
+          <p className="font-extrabold text-sm">{chartTooltip.amount}</p>
+        </div>
+      )}
 
       {showAddTx && (
         <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-50 transition-all">

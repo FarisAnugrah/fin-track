@@ -448,6 +448,12 @@ export default function App() {
                       <div className="font-black text-[#0F172A] text-xl">
                         {formatCurrency(tx.amount)}
                       </div>
+                      <button onClick={(e) => {
+                        e.stopPropagation();
+                        if(window.confirm(`Delete transaction "${tx.desc}"?`)) removeTransaction(tx.id);
+                      }} className="p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50" title="Delete transaction">
+                        <Trash2 className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
                 ))}

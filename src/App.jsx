@@ -440,31 +440,45 @@ export default function App() {
                   const calc = calculateGoal(g);
                   const GoalIcon = GOAL_ICONS[g.icon] || Target;
                   return (
-                    <div key={g.id} className={`flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border-2 ${calc.isAchievable ? 'border-gray-100 hover:border-gray-200' : 'border-red-100 bg-red-50/30'} transition-colors gap-4 relative`}>
-                      <div className="flex items-center gap-4">
-                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border flex-shrink-0 shadow-sm ${calc.isAchievable ? 'bg-[#F8FAFC] border-gray-100 text-[#10B981]' : 'bg-red-50 border-red-100 text-red-500'}`}>
-                          <GoalIcon className="w-7 h-7" />
+                    <div key={g.id} className={`flex flex-col md:flex-row md:items-center justify-between p-6 rounded-[1.5rem] border-2 ${calc.isAchievable ? 'border-gray-100 hover:border-gray-200 hover:shadow-[0_4px_12px_rgba(0,0,0,0.03)] bg-white' : 'border-red-100 bg-red-50/50'} transition-all hover:-translate-y-0.5 gap-6 relative group`}>
+                      <div className="flex items-center gap-5">
+                        <div className={`w-16 h-16 rounded-[1.25rem] flex items-center justify-center flex-shrink-0 shadow-sm ${calc.isAchievable ? 'bg-[#FDF4FF] border-2 border-[#F5D0FE] text-[#C026D3]' : 'bg-red-100 border-2 border-red-200 text-red-600'}`}>
+                          <GoalIcon className="w-8 h-8" />
                         </div>
                         <div>
-                          <h4 className="font-bold text-gray-900 text-lg">{g.name}</h4>
-                          <p className="text-sm text-gray-500 font-medium">In {g.years * 12} months ({g.inflationRate*100}% inflation) → {formatCurrency(calc.futureCost)}</p>
+                          <h4 className="font-extrabold text-[#0F172A] text-xl tracking-tight">{g.name}</h4>
+                          <div className="flex items-center gap-2 mt-1">
+                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest bg-gray-100 px-2 py-0.5 rounded-md">{g.years * 12} Months</span>
+                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest bg-gray-100 px-2 py-0.5 rounded-md">{(g.inflationRate * 100).toFixed(0)}% INFL</span>
+                          </div>
+                          <p className="text-sm text-gray-500 font-medium mt-2">
+                            Future value: <strong className="text-gray-700">{formatCurrency(calc.futureCost)}</strong>
+                          </p>
                         </div>
                       </div>
-                      <div className="text-left md:text-right md:pr-10">
-                        <div className="font-extrabold text-[#0F172A] text-lg">{formatCurrency(calc.monthlyRequired)} <span className="text-sm font-medium text-gray-400">/ mo</span></div>
-                        {calc.isAchievable ? (
-                          <div className="text-xs text-[#10B981] font-bold mt-1 bg-green-50 inline-block px-3 py-1 rounded-lg">Achievable</div>
-                        ) : (
-                          <div className="text-xs text-red-600 font-bold mt-1 bg-red-100 inline-block px-3 py-1 rounded-lg">
-                            {calc.monthlyAvailableForThisGoal <= 0 
-                              ? `Other goals took your budget! Drop a goal.`
-                              : `Requires ${formatCurrency(calc.monthlyRequired - calc.monthlyAvailableForThisGoal)} more/mo or +${calc.monthsToPush} months`}
-                          </div>
-                        )}
+                      
+                      <div className="text-left md:text-right md:pr-14 pl-21 md:pl-0 border-t md:border-t-0 border-gray-100 pt-4 md:pt-0 mt-2 md:mt-0">
+                        <p className="text-sm font-bold text-gray-400 mb-1 uppercase tracking-wide">Monthly Target</p>
+                        <div className="font-black text-[#0F172A] text-2xl tracking-tight">{formatCurrency(calc.monthlyRequired)}</div>
+                        
+                        <div className="mt-2">
+                          {calc.isAchievable ? (
+                            <div className="text-xs text-[#10B981] font-bold bg-[#ECFDF5] border border-[#A7F3D0] inline-block px-3 py-1.5 rounded-lg shadow-sm">
+                              On Track • Achievable
+                            </div>
+                          ) : (
+                            <div className="text-xs text-red-700 font-bold bg-red-100 border border-red-200 inline-block px-3 py-1.5 rounded-lg shadow-sm max-w-xs text-left">
+                              {calc.monthlyAvailableForThisGoal <= 0 
+                                ? `Conflict! Drop another goal to afford this.`
+                                : `Shortfall: ${formatCurrency(calc.monthlyRequired - calc.monthlyAvailableForThisGoal)}/mo`}
+                            </div>
+                          )}
+                        </div>
                       </div>
+                      
                       <button onClick={() => {
                         setDeleteConfirm({ isOpen: true, type: 'goal', id: g.id, title: g.name });
-                      }} className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 p-2 text-gray-300 hover:text-red-500 transition-colors rounded-lg hover:bg-red-50">
+                      }} className="absolute top-4 right-4 md:top-1/2 md:-translate-y-1/2 p-2.5 text-gray-300 hover:text-red-500 transition-colors rounded-xl hover:bg-red-50 opacity-100 md:opacity-0 group-hover:opacity-100 focus:opacity-100">
                         <Trash2 className="w-5 h-5" />
                       </button>
                     </div>

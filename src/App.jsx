@@ -1,5 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2, Search, Filter, Download, Upload, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2, Search, Filter, Download, Upload, ChevronLeft, ChevronRight, Plane, Car, GraduationCap, Heart, Laptop, CircleDollarSign, Baby } from 'lucide-react';
+
+const GOAL_ICONS = {
+  home: Home,
+  car: Car,
+  plane: Plane,
+  grad: GraduationCap,
+  heart: Heart,
+  laptop: Laptop,
+  baby: Baby,
+  money: CircleDollarSign
+};
 import { useStore } from './store';
 import AddGoalModal from './AddGoalModal';
 import Onboarding from './Onboarding';
@@ -344,11 +355,12 @@ export default function App() {
               <div className="space-y-4">
                 {goals.map(g => {
                   const calc = calculateGoal(g);
+                  const GoalIcon = GOAL_ICONS[g.icon] || Target;
                   return (
                     <div key={g.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors gap-4 relative">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-xl border border-gray-100 flex-shrink-0">
-                          {g.icon || '🎯'}
+                        <div className="w-14 h-14 bg-[#F8FAFC] rounded-2xl flex items-center justify-center border border-gray-100 flex-shrink-0 text-[#10B981] shadow-sm">
+                          <GoalIcon className="w-7 h-7" />
                         </div>
                         <div>
                           <h4 className="font-bold text-gray-900 text-lg">{g.name}</h4>

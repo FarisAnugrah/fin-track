@@ -1,5 +1,17 @@
 import React, { useState } from 'react';
 import { useStore } from './store';
+import { Plane, Car, Home, GraduationCap, Heart, Laptop, CircleDollarSign, Baby } from 'lucide-react';
+
+const ICONS = [
+  { id: 'home', component: Home },
+  { id: 'car', component: Car },
+  { id: 'plane', component: Plane },
+  { id: 'grad', component: GraduationCap },
+  { id: 'heart', component: Heart },
+  { id: 'laptop', component: Laptop },
+  { id: 'baby', component: Baby },
+  { id: 'money', component: CircleDollarSign },
+];
 
 export default function AddGoalModal({ onClose }) {
   const { addGoal } = useStore();
@@ -8,6 +20,7 @@ export default function AddGoalModal({ onClose }) {
     currentCost: '',
     years: '',
     inflationRate: '0.04', // Default 4%
+    icon: 'home'
   });
 
   const handleSubmit = (e) => {
@@ -19,7 +32,7 @@ export default function AddGoalModal({ onClose }) {
       currentCost: Number(form.currentCost),
       years: Number(form.years),
       inflationRate: Number(form.inflationRate),
-      icon: '🎯'
+      icon: form.icon
     });
     onClose();
   };
@@ -29,6 +42,26 @@ export default function AddGoalModal({ onClose }) {
       <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
         <h3 className="text-xl font-extrabold text-[#0F172A] mb-6">Add SMART Goal</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-bold text-gray-700 mb-2">Icon</label>
+            <div className="flex flex-wrap gap-3 mb-4">
+              {ICONS.map(iconObj => {
+                const IconComp = iconObj.component;
+                const isSelected = form.icon === iconObj.id;
+                return (
+                  <button
+                    key={iconObj.id}
+                    type="button"
+                    onClick={() => setForm({...form, icon: iconObj.id})}
+                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-[#10B981] text-white shadow-md shadow-emerald-200 border-2 border-[#10B981]' : 'bg-gray-50 text-gray-400 border-2 border-transparent hover:border-gray-200 hover:text-gray-600'}`}
+                  >
+                    <IconComp className="w-6 h-6" />
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+
           <div>
             <label className="block text-sm font-bold text-gray-700 mb-2">Goal Name</label>
               <input 

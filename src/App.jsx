@@ -417,15 +417,30 @@ export default function App() {
                   <Plus className="w-4 h-4" /> Create First Goal
                 </button>
               </div>
-          ) : (
+            ) : (
               <div className="space-y-4">
+                {/* Aggregate calculation to check if ALL goals together exceed the 20% limit */}
+                {(() => {
+                  const totalRequiredAllGoals = goals.reduce((acc, g) => acc + calculateGoal(g).monthlyRequired, 0);
+                  const totalAllowed = income * 0.2;
+                  if (totalRequiredAllGoals > totalAllowed) {
+                    return (
+                      <div className="bg-red-50 border border-red-100 p-4 rounded-2xl mb-6">
+                        <h4 className="text-red-800 font-bold mb-1">Warning: Goal Conflict ⚠️</h4>
+                        <p className="text-red-600 text-sm font-medium">Your combined goals require <strong>{formatCurrency(totalRequiredAllGoals)}/mo</strong>, but your 20% budget only allows <strong>{formatCurrency(totalAllowed)}/mo</strong>. Some goals may not be achievable simultaneously.</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+
                 {goals.map(g => {
                   const calc = calculateGoal(g);
                   const GoalIcon = GOAL_ICONS[g.icon] || Target;
                   return (
-                    <div key={g.id} className="flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border border-gray-100 hover:border-gray-200 transition-colors gap-4 relative">
+                    <div key={g.id} className={`flex flex-col md:flex-row md:items-center justify-between p-5 rounded-2xl border-2 ${calc.isAchievable ? 'border-gray-100 hover:border-gray-200' : 'border-red-100 bg-red-50/30'} transition-colors gap-4 relative`}>
                       <div className="flex items-center gap-4">
-                        <div className="w-14 h-14 bg-[#F8FAFC] rounded-2xl flex items-center justify-center border border-gray-100 flex-shrink-0 text-[#10B981] shadow-sm">
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center border flex-shrink-0 shadow-sm ${calc.isAchievable ? 'bg-[#F8FAFC] border-gray-100 text-[#10B981]' : 'bg-red-50 border-red-100 text-red-500'}`}>
                           <GoalIcon className="w-7 h-7" />
                         </div>
                         <div>
@@ -438,8 +453,10 @@ export default function App() {
                         {calc.isAchievable ? (
                           <div className="text-xs text-[#10B981] font-bold mt-1 bg-green-50 inline-block px-3 py-1 rounded-lg">Achievable</div>
                         ) : (
-                          <div className="text-xs text-red-600 font-bold mt-1 bg-red-50 inline-block px-3 py-1 rounded-lg">
-                            Requires {formatCurrency(calc.monthlyRequired - (income*0.2))} more/mo or +{calc.monthsToPush} months
+                          <div className="text-xs text-red-600 font-bold mt-1 bg-red-100 inline-block px-3 py-1 rounded-lg">
+                            {calc.monthlyAvailableForThisGoal <= 0 
+                              ? `Other goals took your budget! Drop a goal.`
+                              : `Requires ${formatCurrency(calc.monthlyRequired - calc.monthlyAvailableForThisGoal)} more/mo or +${calc.monthsToPush} months`}
                           </div>
                         )}
                       </div>

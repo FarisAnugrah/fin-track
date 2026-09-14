@@ -810,8 +810,8 @@ export default function App() {
       )}
 
       {deleteConfirm.isOpen && (
-        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-[60] transition-all">
-          <div className="bg-white rounded-[2rem] p-8 w-full max-w-sm shadow-2xl border border-gray-100 text-center">
+        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-end md:items-center justify-center p-0 md:p-4 z-[60] transition-all">
+          <div className="bg-white rounded-t-[2rem] md:rounded-[2rem] p-8 w-full max-w-sm shadow-2xl border border-gray-100 text-center mb-0 md:mb-0">
             <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
               <Trash2 className="w-8 h-8 text-red-500" />
             </div>

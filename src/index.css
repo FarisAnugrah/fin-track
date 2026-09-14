@@ -3,12 +3,11 @@
 @tailwind utilities;
 
 body {
-  background-color: #F8FAFC;
+  background-color: #E2E8F0;
   font-family: 'Inter', -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-/* Hide scrollbar for clean UI */
 ::-webkit-scrollbar {
   width: 0px;
   background: transparent;

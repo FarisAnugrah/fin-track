@@ -1,16 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useStore } from './store';
-import { Plane, Car, Home, GraduationCap, Heart, Laptop, CircleDollarSign, Baby } from 'lucide-react';
+import { Plane, Car, Home, GraduationCap, Heart, Laptop, CircleDollarSign, Baby, Camera, Music, BookOpen, Coffee, Dumbbell, Gamepad2, Gift, Gem, ShoppingBag, Palmtree, Search } from 'lucide-react';
 
 const ICONS = [
-  { id: 'home', component: Home },
-  { id: 'car', component: Car },
-  { id: 'plane', component: Plane },
-  { id: 'grad', component: GraduationCap },
-  { id: 'heart', component: Heart },
-  { id: 'laptop', component: Laptop },
-  { id: 'baby', component: Baby },
-  { id: 'money', component: CircleDollarSign },
+  { id: 'home', tags: ['house', 'home', 'property', 'mortgage', 'rent'], component: Home },
+  { id: 'car', tags: ['car', 'vehicle', 'auto', 'driving'], component: Car },
+  { id: 'plane', tags: ['travel', 'flight', 'holiday', 'vacation', 'trip'], component: Plane },
+  { id: 'grad', tags: ['education', 'school', 'university', 'college', 'degree'], component: GraduationCap },
+  { id: 'heart', tags: ['health', 'medical', 'wedding', 'love', 'care'], component: Heart },
+  { id: 'laptop', tags: ['tech', 'computer', 'laptop', 'mac', 'gadget'], component: Laptop },
+  { id: 'baby', tags: ['child', 'baby', 'kid', 'family'], component: Baby },
+  { id: 'money', tags: ['saving', 'invest', 'money', 'cash', 'fund'], component: CircleDollarSign },
+  { id: 'camera', tags: ['photo', 'camera', 'hobby', 'lens'], component: Camera },
+  { id: 'music', tags: ['music', 'concert', 'instrument', 'guitar'], component: Music },
+  { id: 'book', tags: ['book', 'course', 'learning'], component: BookOpen },
+  { id: 'coffee', tags: ['cafe', 'coffee', 'business', 'shop'], component: Coffee },
+  { id: 'gym', tags: ['gym', 'fitness', 'sport', 'health'], component: Dumbbell },
+  { id: 'game', tags: ['gaming', 'console', 'ps5', 'pc', 'game'], component: Gamepad2 },
+  { id: 'gift', tags: ['gift', 'present', 'birthday', 'charity'], component: Gift },
+  { id: 'gem', tags: ['ring', 'jewelry', 'wedding', 'luxury'], component: Gem },
+  { id: 'shop', tags: ['shopping', 'clothes', 'fashion'], component: ShoppingBag },
+  { id: 'beach', tags: ['beach', 'holiday', 'summer', 'island'], component: Palmtree },
 ];
 
 export default function AddGoalModal({ onClose }) {
@@ -22,6 +32,16 @@ export default function AddGoalModal({ onClose }) {
     inflationRate: '0.04', // Default 4%
     icon: 'home'
   });
+  
+  const [searchIcon, setSearchIcon] = useState('');
+
+  const filteredIcons = useMemo(() => {
+    if (!searchIcon.trim()) return ICONS;
+    const term = searchIcon.toLowerCase();
+    return ICONS.filter(i => 
+      i.id.includes(term) || i.tags.some(tag => tag.includes(term))
+    );
+  }, [searchIcon]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -38,27 +58,42 @@ export default function AddGoalModal({ onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/20 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
-        <h3 className="text-xl font-extrabold text-[#0F172A] mb-6">Add SMART Goal</h3>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 z-[60] transition-all overflow-y-auto">
+      <div className="bg-white rounded-[2rem] p-8 w-full max-w-lg shadow-2xl border border-gray-100 my-8">
+        <h3 className="text-2xl font-extrabold text-[#0F172A] mb-8">Add SMART Goal</h3>
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-gray-700 mb-2">Icon</label>
-            <div className="flex flex-wrap gap-3 mb-4">
-              {ICONS.map(iconObj => {
-                const IconComp = iconObj.component;
-                const isSelected = form.icon === iconObj.id;
-                return (
-                  <button
-                    key={iconObj.id}
-                    type="button"
-                    onClick={() => setForm({...form, icon: iconObj.id})}
-                    className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all ${isSelected ? 'bg-[#10B981] text-white shadow-md shadow-emerald-200 border-2 border-[#10B981]' : 'bg-gray-50 text-gray-400 border-2 border-transparent hover:border-gray-200 hover:text-gray-600'}`}
-                  >
-                    <IconComp className="w-6 h-6" />
-                  </button>
-                )
-              })}
+            <label className="block text-sm font-bold text-gray-700 mb-3">Goal Icon</label>
+            <div className="bg-gray-50 rounded-2xl p-4 border-2 border-gray-100">
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input 
+                  type="text" 
+                  placeholder="Search icons (e.g. 'wedding', 'travel')" 
+                  value={searchIcon}
+                  onChange={(e) => setSearchIcon(e.target.value)}
+                  className="w-full bg-white border border-gray-200 pl-10 pr-4 py-2 rounded-xl focus:border-[#10B981] focus:ring-0 outline-none text-sm transition-colors"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto pr-2 pb-2">
+                {filteredIcons.length > 0 ? filteredIcons.map(iconObj => {
+                  const IconComp = iconObj.component;
+                  const isSelected = form.icon === iconObj.id;
+                  return (
+                    <button
+                      key={iconObj.id}
+                      type="button"
+                      onClick={() => setForm({...form, icon: iconObj.id})}
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all flex-shrink-0 ${isSelected ? 'bg-[#10B981] text-white shadow-md shadow-emerald-200 border-2 border-[#10B981] scale-110' : 'bg-white text-gray-400 border-2 border-transparent hover:border-gray-200 hover:text-gray-600'}`}
+                      title={iconObj.tags.join(', ')}
+                    >
+                      <IconComp className="w-5 h-5" />
+                    </button>
+                  )
+                }) : (
+                  <p className="text-sm text-gray-400 text-center w-full py-4">No icons found. Try another keyword.</p>
+                )}
+              </div>
             </div>
           </div>
 

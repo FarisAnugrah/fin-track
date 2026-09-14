@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2, Search, Filter, Download, Upload, ChevronLeft, ChevronRight, Plane, Car, GraduationCap, Heart, Laptop, CircleDollarSign, Baby, Camera, Music, BookOpen, Dumbbell, Gamepad2, Gift, Gem, ShoppingBag, Palmtree } from 'lucide-react';
+import { LayoutDashboard, Target, Activity, Plus, Home, Coffee, LogOut, Settings, Trash2, Search, Filter, Download, Upload, ChevronLeft, ChevronRight, Plane, Car, GraduationCap, Heart, Laptop, CircleDollarSign, Baby, Camera, Music, BookOpen, Dumbbell, Gamepad2, Gift, Gem, ShoppingBag, Palmtree, Bike, Cat, Armchair, Shirt, PartyPopper, Utensils, Smartphone, Watch, Wrench, PiggyBank, Brush, Ticket, Tent } from 'lucide-react';
 
 const GOAL_ICONS = {
   home: Home,
@@ -19,7 +19,20 @@ const GOAL_ICONS = {
   gift: Gift,
   gem: Gem,
   shop: ShoppingBag,
-  beach: Palmtree
+  beach: Palmtree,
+  bike: Bike,
+  pet: Cat,
+  furniture: Armchair,
+  clothes: Shirt,
+  party: PartyPopper,
+  food: Utensils,
+  phone: Smartphone,
+  watch: Watch,
+  tools: Wrench,
+  savings: PiggyBank,
+  art: Brush,
+  event: Ticket,
+  camp: Tent
 };
 import { useStore } from './store';
 import AddGoalModal from './AddGoalModal';

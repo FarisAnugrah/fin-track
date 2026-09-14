@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useStore } from './store';
-import { Plane, Car, Home, GraduationCap, Heart, Laptop, CircleDollarSign, Baby, Camera, Music, BookOpen, Coffee, Dumbbell, Gamepad2, Gift, Gem, ShoppingBag, Palmtree, Search } from 'lucide-react';
+import { Plane, Car, Home, GraduationCap, Heart, Laptop, CircleDollarSign, Baby, Camera, Music, BookOpen, Coffee, Dumbbell, Gamepad2, Gift, Gem, ShoppingBag, Palmtree, Search, Bike, Cat, Armchair, Shirt, PartyPopper, Utensils, Smartphone, Watch, Wrench, PiggyBank, Brush, Ticket, Tent } from 'lucide-react';
 
 const ICONS = [
   { id: 'home', tags: ['house', 'home', 'property', 'mortgage', 'rent'], component: Home },
@@ -21,6 +21,19 @@ const ICONS = [
   { id: 'gem', tags: ['ring', 'jewelry', 'wedding', 'luxury'], component: Gem },
   { id: 'shop', tags: ['shopping', 'clothes', 'fashion'], component: ShoppingBag },
   { id: 'beach', tags: ['beach', 'holiday', 'summer', 'island'], component: Palmtree },
+  { id: 'bike', tags: ['bike', 'bicycle', 'cycling', 'sport'], component: Bike },
+  { id: 'pet', tags: ['pet', 'cat', 'dog', 'animal', 'vet'], component: Cat },
+  { id: 'furniture', tags: ['furniture', 'sofa', 'chair', 'house', 'decor'], component: Armchair },
+  { id: 'clothes', tags: ['clothes', 'shirt', 'apparel', 'fashion'], component: Shirt },
+  { id: 'party', tags: ['party', 'celebration', 'event', 'wedding', 'birthday'], component: PartyPopper },
+  { id: 'food', tags: ['food', 'dining', 'restaurant', 'meal', 'cook'], component: Utensils },
+  { id: 'phone', tags: ['phone', 'mobile', 'smartphone', 'iphone', 'gadget'], component: Smartphone },
+  { id: 'watch', tags: ['watch', 'clock', 'smartwatch', 'accessory'], component: Watch },
+  { id: 'tools', tags: ['tools', 'repair', 'fix', 'renovation', 'hardware'], component: Wrench },
+  { id: 'savings', tags: ['piggy', 'bank', 'savings', 'deposit', 'emergency'], component: PiggyBank },
+  { id: 'art', tags: ['art', 'painting', 'draw', 'creative', 'hobby'], component: Brush },
+  { id: 'event', tags: ['ticket', 'event', 'concert', 'movie', 'cinema'], component: Ticket },
+  { id: 'camp', tags: ['camp', 'tent', 'outdoor', 'hike', 'nature'], component: Tent },
 ];
 
 export default function AddGoalModal({ onClose }) {

@@ -287,8 +287,8 @@ export default function App() {
 
         {activeTab === 'dashboard' && (
           <>
-            <div className="bg-white rounded-[2rem] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-8 mb-10 flex flex-col md:flex-row items-center gap-10">
-              <div className="relative w-48 h-48 flex-shrink-0">
+            <div className="bg-white rounded-[2rem] border border-gray-100 shadow-[0_2px_10px_rgba(0,0,0,0.02)] p-6 md:p-8 mb-10 flex flex-col md:flex-row items-center gap-8 md:gap-10">
+              <div className="relative w-40 h-40 md:w-48 md:h-48 flex-shrink-0">
                 <svg viewBox="0 0 100 100" className="w-full h-full transform -rotate-90 overflow-visible relative z-10 pointer-events-auto">
                   <circle cx="50" cy="50" r="40" fill="transparent" stroke="#F1F5F9" strokeWidth="12" className="pointer-events-none" />
                   
@@ -351,12 +351,12 @@ export default function App() {
                     <span className="text-sm font-bold text-gray-600">Goals</span>
                   </div>
                 </div>
-                <div className="mt-8 pt-6 border-t border-gray-100 flex gap-6">
+                <div className="mt-8 pt-6 border-t border-gray-100 flex flex-col sm:flex-row gap-4 sm:gap-6">
                   <div className="flex-1">
                     <p className="text-sm font-bold text-gray-400 mb-1">Total Remaining</p>
                     <p className="text-xl font-black text-[#10B981]">{formatCurrency(income - (currentSpent.needs + currentSpent.wants + currentSpent.goals))}</p>
                   </div>
-                  <div className="flex-1 border-l border-gray-100 pl-6">
+                  <div className="flex-1 sm:border-l sm:border-t-0 border-t border-gray-100 sm:pl-6 pt-4 sm:pt-0">
                     <p className="text-sm font-bold text-gray-400 mb-1">Total Transactions</p>
                     <p className="text-xl font-black text-[#0F172A]">{currentMonthTransactions.length}</p>
                   </div>
@@ -619,18 +619,8 @@ export default function App() {
                             </>
                           )}
                         </div>
-                <div className="mt-8 pt-6 border-t border-gray-100 flex gap-6">
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-gray-400 mb-1">Total Remaining</p>
-                    <p className="text-xl font-black text-[#10B981]">{formatCurrency(income - (currentSpent.needs + currentSpent.wants + currentSpent.goals))}</p>
-                  </div>
-                  <div className="flex-1 border-l border-gray-100 pl-6">
-                    <p className="text-sm font-bold text-gray-400 mb-1">Total Transactions</p>
-                    <p className="text-xl font-black text-[#0F172A]">{currentMonthTransactions.length}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+                      </div>
+                    </div>
                     <div className="flex items-center gap-4">
                       <div className="font-black text-[#0F172A] text-xl">
                         {formatCurrency(tx.amount)}
